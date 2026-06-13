@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Bank Management System | Dashboard Home</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS v3 + basic config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: Modern Professional -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e9f0fa 100%);
+            min-height: 100vh;
+        }
+        /* Custom Navbar Styling with glass effect */
+        .navbar-glass {
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .navbar-brand {
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, #FFFFFF, #60A5FA);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .nav-link {
+            font-weight: 600;
+            color: #e2e8f0 !important;
+            transition: all 0.2s ease;
+            margin: 0 4px;
+            border-radius: 0.5rem;
+        }
+        .nav-link:hover {
+            background: rgba(59,130,246,0.2);
+            color: #ffffff !important;
+            transform: translateY(-1px);
+        }
+        /* Dropdown menu custom style */
+        .dropdown-menu {
+            background: rgba(15, 30, 55, 0.98);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(59,130,246,0.4);
+            border-radius: 1rem;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.3);
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+        }
+        .dropdown-item {
+            color: #e2e8f0;
+            font-weight: 500;
+            padding: 0.7rem 1.5rem;
+            transition: all 0.2s;
+            border-radius: 0.5rem;
+            margin: 0 4px;
+        }
+        .dropdown-item i {
+            width: 1.8rem;
+            color: #60a5fa;
+        }
+        .dropdown-item:hover {
+            background: rgba(59,130,246,0.25);
+            color: white;
+            transform: translateX(5px);
+        }
+        /* Hero Section Animation */
+        .hero-card {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            border: 1px solid rgba(59,130,246,0.2);
+            transition: transform 0.3s ease;
+        }
+        .hero-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-card {
+            background: white;
+            border-radius: 1.5rem;
+            transition: all 0.3s;
+            border: none;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .btn-outline-custom {
+            border: 2px solid #3b82f6;
+            color: #1e3a8a;
+            border-radius: 2rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-outline-custom:hover {
+            background: #3b82f6;
+            color: white;
+            transform: scale(1.02);
+        }
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+        }
+        @media (max-width: 992px) {
+            .dropdown-menu {
+                background: #1e293b;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar with 4 Dropdown Menus: Branch, Customer, Transaction, Employee -->
+    <nav class="navbar navbar-expand-lg navbar-glass sticky-top py-3">
+        <div class="container px-4">
+            <!-- Brand Logo -->
+            <a class="navbar-brand fw-extrabold" href="#">
+                <i class="fas fa-building-columns me-2 text-blue-400"></i> 
+                BankMS<span class="text-blue-400"> Elite</span>
+            </a>
+            <button class="navbar-toggler bg-white/10 border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-2">
+                    
+                    <!-- 1. BRANCH DROPDOWN MENU -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="branchDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-code-branch me-1"></i> Branch
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="branchDropdown">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#branchModal" data-action="add"><i class="fas fa-plus-circle"></i> Add New Branch</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#branchModal" data-action="delete"><i class="fas fa-trash-alt"></i> Delete Branch</a></li>
+                            <li><hr class="dropdown-divider bg-white/20"></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#adminPanelModal"><i class="fas fa-user-shield"></i> Admin Panel</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#branchModal" data-action="update"><i class="fas fa-edit"></i> Update Branch Details</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- 2. CUSTOMER DROPDOWN MENU -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="customerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-users me-1"></i> Customer
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="customerDropdown">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#customerModal" data-action="add"><i class="fas fa-user-plus"></i> Add Customer</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#customerModal" data-action="delete"><i class="fas fa-user-minus"></i> Delete Customer</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#customerModal" data-action="update"><i class="fas fa-user-edit"></i> Update Customer Data</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- 3. TRANSACTION DROPDOWN MENU -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="transactionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-exchange-alt me-1"></i> Transaction
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionDropdown">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#transactionModal" data-action="deposit"><i class="fas fa-hand-holding-usd"></i> Deposit</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#transactionModal" data-action="withdraw"><i class="fas fa-money-bill-wave"></i> Withdraw</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#transactionModal" data-action="loan"><i class="fas fa-hand-holding-heart"></i> Loan</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- 4. EMPLOYEE DROPDOWN MENU -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="employeeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-id-badge me-1"></i> Employee
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="employeeDropdown">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#employeeModal" data-action="add"><i class="fas fa-user-plus"></i> Add New Emp.</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#employeeModal" data-action="delete"><i class="fas fa-user-slash"></i> Delete Emp.</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#employeeModal" data-action="update"><i class="fas fa-sync-alt"></i> Update Emp.Data</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Optional Profile Icon (just demo) -->
+                    <li class="nav-item ms-lg-2">
+                        <a class="nav-link" href="#"><i class="fas fa-user-circle"></i> Admin</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section & Dashboard Overview -->
+    <main class="container px-4 py-5">
+        <!-- Welcome Banner -->
+        <div class="hero-card p-4 p-lg-5 mb-5 shadow-sm">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-5 fw-bold gradient-text">Bank Management System</h1>
+                    <p class="lead text-secondary">Centralized dashboard to manage branches, customers, transactions, and employees efficiently.</p>
+                    <div class="d-flex flex-wrap gap-3 mt-3">
+                        <span class="badge bg-primary bg-opacity-10 text-primary px-4 py-2 rounded-pill"><i class="fas fa-shield-alt me-1"></i> Secure Core</span>
+                        <span class="badge bg-info bg-opacity-10 text-info px-4 py-2 rounded-pill"><i class="fas fa-chart-line"></i> Real-time Analytics</span>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-university text-primary opacity-25" style="font-size: 8rem;"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stat Cards (Key Metrics) -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card p-4 text-center">
+                    <i class="fas fa-code-branch fa-3x text-blue-500 mb-2"></i>
+                    <h3 class="fw-bold text-dark">12</h3>
+                    <p class="text-muted mb-0">Total Branches</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card p-4 text-center">
+                    <i class="fas fa-users fa-3x text-blue-500 mb-2"></i>
+                    <h3 class="fw-bold text-dark">2,845</h3>
+                    <p class="text-muted mb-0">Active Customers</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card p-4 text-center">
+                    <i class="fas fa-exchange-alt fa-3x text-blue-500 mb-2"></i>
+                    <h3 class="fw-bold text-dark">$4.2M</h3>
+                    <p class="text-muted mb-0">Monthly Volume</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card p-4 text-center">
+                    <i class="fas fa-id-card fa-3x text-blue-500 mb-2"></i>
+                    <h3 class="fw-bold text-dark">156</h3>
+                    <p class="text-muted mb-0">Staff Members</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Action Grid (use dropdowns as shortcut) -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3 class="fw-semibold mb-4"><i class="fas fa-bolt me-2 text-primary"></i> Quick Management Actions</h3>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100 text-center p-3 action-card" data-bs-toggle="modal" data-bs-target="#branchModal" data-action="add" style="cursor: pointer;">
+                    <i class="fas fa-plus-circle fa-2x text-primary my-2"></i>
+                    <h6>Add New Branch</h6>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100 text-center p-3 action-card" data-bs-toggle="modal" data-bs-target="#customerModal" data-action="add" style="cursor: pointer;">
+                    <i class="fas fa-user-plus fa-2x text-success my-2"></i>
+                    <h6>Register Customer</h6>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100 text-center p-3 action-card" data-bs-toggle="modal" data-bs-target="#transactionModal" data-action="deposit" style="cursor: pointer;">
+                    <i class="fas fa-hand-holding-usd fa-2x text-warning my-2"></i>
+                    <h6>Make Deposit</h6>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100 text-center p-3 action-card" data-bs-toggle="modal" data-bs-target="#employeeModal" data-action="add" style="cursor: pointer;">
+                    <i class="fas fa-user-tie fa-2x text-info my-2"></i>
+                    <h6>Hire Employee</h6>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- FOOTER -->
+    <footer class="mt-5 py-4 text-center">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 Bank Management System — Comprehensive Banking Solution. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ======================== MODALS FOR EACH CATEGORY ======================== -->
+    <!-- Generic Branch Modal (Add/Delete/Update + Admin Panel separate) -->
+    <div class="modal fade" id="branchModal" tabindex="-1" aria-labelledby="branchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white rounded-4">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title" id="branchModalLabel"><i class="fas fa-code-branch me-2"></i>Branch Operation</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="branchModalBody">
+                    <!-- dynamic content based on action -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Modal (Add/Delete/Update) -->
+    <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white rounded-4">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title" id="customerModalLabel"><i class="fas fa-users me-2"></i>Customer Management</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="customerModalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Modal (Deposit, Withdraw, Loan) -->
+    <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white rounded-4">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title" id="transactionModalLabel"><i class="fas fa-exchange-alt me-2"></i>Transaction</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="transactionModalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Modal (Add/Delete/Update) -->
+    <div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white rounded-4">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title" id="employeeModalLabel"><i class="fas fa-id-card me-2"></i>Employee Management</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="employeeModalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Special Admin Panel Modal -->
+    <div class="modal fade" id="adminPanelModal" tabindex="-1" aria-labelledby="adminPanelLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white rounded-4">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title"><i class="fas fa-user-shield me-2"></i>Admin Panel - Branch Oversight</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><i class="fas fa-info-circle text-info me-2"></i> Admin console for branch configuration, audit logs, and system health.</p>
+                    <div class="alert alert-secondary bg-white/10 text-white border-0">🔐 Superuser privileges required to modify global settings.</div>
+                    <button class="btn btn-primary w-100" data-bs-dismiss="modal">Launch Admin Dashboard (Demo)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS + Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dynamic modal content injection based on action attributes (Branch, Customer, Transaction, Employee)
+        function setBranchModalContent(action) {
+            const modalBody = document.getElementById('branchModalBody');
+            if(action === 'add') {
+                modalBody.innerHTML = `<form id="branchAddForm"><div class="mb-3"><label class="form-label">Branch Name</label><input type="text" class="form-control bg-white/10 text-white border-0" placeholder="e.g., Downtown Main" required><label class="form-label mt-2">Location</label><input type="text" class="form-control bg-white/10 text-white border-0" placeholder="City, Address"></div><button type="submit" class="btn btn-primary w-100">➕ Add Branch</button></form><div class="mt-2 small text-info">Demo: Branch added successfully (simulation).</div>`;
+                attachFormSimulation('branchAddForm', 'Branch added successfully!');
+            } else if(action === 'delete') {
+                modalBody.innerHTML = `<form id="branchDeleteForm"><div class="mb-3"><label class="form-label">Branch ID / Code</label><input type="text" class="form-control bg-white/10 text-white border-0" placeholder="BR001" required></div><button type="submit" class="btn btn-danger w-100">🗑️ Delete Branch</button></form><p class="mt-2 text-warning small">⚠️ This action is irreversible in live system.</p>`;
+                attachFormSimulation('branchDeleteForm', 'Branch deleted from records (Demo).');
+            } else if(action === 'update') {
+                modalBody.innerHTML = `<form id="branchUpdateForm"><div class="mb-3"><label class="form-label">Branch ID</label><input type="text" class="form-control bg-white/10 text-white border-0" placeholder="BR002" required><label class="form-label mt-2">New Branch Name / Details</label><input type="text" class="form-control bg-white/10 text-white border-0" placeholder="Updated Info"></div><button type="submit" class="btn btn-warning w-100">✏️ Update Branch</button></form>`;
+                attachFormSimulation('branchUpdateForm', 'Branch details updated successfully.');
+            }
+        }
+
+        function setCustomerModalContent(action) {
+            const body = document.getElementById('customerModalBody');
+            if(action === 'add') {
+                body.innerHTML = `<form id="custAddForm"><div class="mb-3"><label>Full Name</label><input class="form-control bg-white/10 text-white" placeholder="John Doe" required><label class="mt-2">Account No / Email</label><input class="form-control bg-white/10 text-white" placeholder="AC-1001"></div><button type="submit" class="btn btn-success w-100">➕ Add Customer</button></form>`;
+                attachFormSimulation('custAddForm', 'New customer registered successfully!');
+            } else if(action === 'delete') {
+                body.innerHTML = `<form id="custDeleteForm"><div class="mb-3"><label>Customer ID / Account No</label><input class="form-control bg-white/10 text-white" placeholder="CUST-1024" required></div><button type="submit" class="btn btn-danger w-100">❌ Delete Customer</button></form>`;
+                attachFormSimulation('custDeleteForm', 'Customer removed from system (demo).');
+            } else if(action === 'update') {
+                body.innerHTML = `<form id="custUpdateForm"><div class="mb-3"><label>Customer ID</label><input class="form-control bg-white/10 text-white" placeholder="CUST-7890" required><label class="mt-2">New Contact/Address</label><input class="form-control bg-white/10 text-white" placeholder="Updated data"></div><button type="submit" class="btn btn-primary w-100">🔄 Update Customer Data</button></form>`;
+                attachFormSimulation('custUpdateForm', 'Customer profile updated.');
+            }
+        }
+
+        function setTransactionModalContent(action) {
+            const body = document.getElementById('transactionModalBody');
+            if(action === 'deposit') {
+                body.innerHTML = `<form id="txnDeposit"><div class="mb-3"><label>Account Number</label><input class="form-control bg-white/10 text-white" placeholder="ACC-112233" required><label class="mt-2">Amount ($)</label><input type="number" class="form-control bg-white/10 text-white" placeholder="5000" required></div><button type="submit" class="btn btn-info w-100">💰 Deposit Funds</button></form>`;
+                attachFormSimulation('txnDeposit', 'Deposit successful! Amount credited.');
+            } else if(action === 'withdraw') {
+                body.innerHTML = `<form id="txnWithdraw"><div class="mb-3"><label>Account Number</label><input class="form-control bg-white/10 text-white" placeholder="ACC-112233" required><label class="mt-2">Withdrawal Amount</label><input type="number" class="form-control bg-white/10 text-white" placeholder="2000" required></div><button type="submit" class="btn btn-warning w-100">🏧 Withdraw Cash</button></form>`;
+                attachFormSimulation('txnWithdraw', 'Withdrawal processed. Please collect cash.');
+            } else if(action === 'loan') {
+                body.innerHTML = `<form id="txnLoan"><div class="mb-3"><label>Customer Account</label><input class="form-control bg-white/10 text-white" placeholder="ACC-9988" required><label class="mt-2">Loan Amount Requested</label><input type="number" class="form-control bg-white/10 text-white" placeholder="25000" required><label class="mt-2">Tenure (months)</label><input class="form-control bg-white/10 text-white" placeholder="24"></div><button type="submit" class="btn btn-success w-100">📑 Apply Loan</button></form>`;
+                attachFormSimulation('txnLoan', 'Loan application submitted for review.');
+            }
+        }
+
+        function setEmployeeModalContent(action) {
+            const body = document.getElementById('employeeModalBody');
+            if(action === 'add') {
+                body.innerHTML = `<form id="empAddForm"><div class="mb-3"><label>Full Name</label><input class="form-control bg-white/10 text-white" placeholder="Sarah Johnson" required><label class="mt-2">Position</label><input class="form-control bg-white/10 text-white" placeholder="Loan Officer"></div><button type="submit" class="btn btn-primary w-100">👥 Add New Emp.</button></form>`;
+                attachFormSimulation('empAddForm', 'New employee added to the system.');
+            } else if(action === 'delete') {
+                body.innerHTML = `<form id="empDeleteForm"><div class="mb-3"><label>Employee ID</label><input class="form-control bg-white/10 text-white" placeholder="E-1024" required></div><button type="submit" class="btn btn-danger w-100">🗑️ Delete Emp.</button></form>`;
+                attachFormSimulation('empDeleteForm', 'Employee record deleted (demo).');
+            } else if(action === 'update') {
+                body.innerHTML = `<form id="empUpdateForm"><div class="mb-3"><label>Employee ID</label><input class="form-control bg-white/10 text-white" placeholder="E-2099" required><label class="mt-2">Updated Department/Role</label><input class="form-control bg-white/10 text-white" placeholder="Senior Manager"></div><button type="submit" class="btn btn-secondary w-100">📝 Update Emp.Data</button></form>`;
+                attachFormSimulation('empUpdateForm', 'Employee data updated successfully.');
+            }
+        }
+
+        function attachFormSimulation(formId, successMsg) {
+            setTimeout(() => {
+                const form = document.getElementById(formId);
+                if(form) {
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        alert(`✅ ${successMsg}\n(Bank Management System Demo Mode)`);
+                        const modal = bootstrap.Modal.getInstance(document.querySelector('.modal.show'));
+                        if(modal) modal.hide();
+                    });
+                }
+            }, 50);
+        }
+
+        // Event listeners to trigger modals with dynamic content based on data-action
+        document.querySelectorAll('[data-bs-toggle="modal"]').forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
+                const targetModal = trigger.getAttribute('data-bs-target');
+                const action = trigger.getAttribute('data-action');
+                if(targetModal === '#branchModal' && action) setBranchModalContent(action);
+                if(targetModal === '#customerModal' && action) setCustomerModalContent(action);
+                if(targetModal === '#transactionModal' && action) setTransactionModalContent(action);
+                if(targetModal === '#employeeModal' && action) setEmployeeModalContent(action);
+                
+                // For Admin Panel no extra dynamic needed
+                if(targetModal === '#adminPanelModal') {
+                    // already static content in modal.
+                }
+            });
+        });
+        
+        // also add default init for quick cards
+        document.querySelectorAll('.action-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                const targetModal = card.getAttribute('data-bs-target');
+                const action = card.getAttribute('data-action');
+                if(targetModal === '#branchModal') setBranchModalContent(action);
+                if(targetModal === '#customerModal') setCustomerModalContent(action);
+                if(targetModal === '#transactionModal') setTransactionModalContent(action);
+                if(targetModal === '#employeeModal') setEmployeeModalContent(action);
+            });
+        });
+
+        // Set default empty states for modals to avoid blank
+        window.addEventListener('load', () => {
+            setBranchModalContent('add');   // default dummy but not visible
+            setCustomerModalContent('add');
+            setTransactionModalContent('deposit');
+            setEmployeeModalContent('add');
+        });
+    </script>
+    <style>
+        .action-card {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .action-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -12px rgba(0,0,0,0.15);
+            background: #f8fafc;
+        }
+        .dropdown-item i {
+            margin-right: 8px;
+        }
+        .navbar-nav .dropdown-menu {
+            min-width: 220px;
+        }
+    </style>
+</body>
+</html>

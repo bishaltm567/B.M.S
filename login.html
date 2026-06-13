@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Bank Management System | Secure Login Portal</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Tailwind CSS v3 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts: Professional Banking Typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <style>
+    /* global reset */
+    * {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      /* Premium animated gradient background - shifts on page hover */
+      background: linear-gradient(135deg, #0B1120 0%, #111827 25%, #1F2937 50%, #0F172A 75%, #030712 100%);
+      background-size: 300% 300%;
+      background-position: 0% 50%;
+      transition: background-position 0.85s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* PAGE HOVER TRIGGER: background smoothly animates across the gradient */
+    body:hover {
+      background-position: 100% 50%;
+      transition: background-position 1.3s cubic-bezier(0.2, 0.95, 0.4, 1.2);
+    }
+
+    /* floating particles / animated shapes for extra depth (background enhancement) */
+    .bg-float-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .float-glow {
+      position: absolute;
+      background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(59,130,246,0) 70%);
+      border-radius: 50%;
+      filter: blur(45px);
+      animation: floatSlow 24s infinite alternate ease-in-out;
+    }
+    @keyframes floatSlow {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+      100% { transform: translate(35px, -25px) scale(1.25); opacity: 0.7; }
+    }
+
+    /* MAIN LOGIN CARD: sophisticated glassmorphic + hover animations + entrance animation */
+    .bms-login-card {
+      backdrop-filter: blur(14px);
+      background: rgba(15, 25, 45, 0.7);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      border-radius: 2rem;
+      transition: all 0.45s cubic-bezier(0.2, 0.95, 0.4, 1.1);
+      box-shadow: 0 30px 45px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(59,130,246,0.2) inset;
+      transform: translateY(0px);
+    }
+
+    /* LOGIN DIV HOVER EFFECT: scale, glow, border premium, background refinement */
+    .bms-login-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      background: rgba(20, 32, 55, 0.82);
+      border-color: rgba(59, 130, 246, 0.8);
+      box-shadow: 0 40px 55px -18px rgba(0,0,0,0.8), 0 0 0 3px rgba(59,130,246,0.35), 0 0 30px rgba(59,130,246,0.25);
+      backdrop-filter: blur(20px);
+    }
+
+    /* custom form inputs: tailwind + bootstrap synergy */
+    .input-bms {
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      border-radius: 1rem !important;
+      padding: 0.75rem 1rem;
+    }
+    .input-bms:focus {
+      background-color: rgba(255, 255, 255, 0.12);
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.4);
+      color: white;
+      outline: none;
+    }
+    .input-bms::placeholder {
+      color: rgba(200, 210, 240, 0.5);
+      font-weight: 400;
+    }
+
+    /* premium gradient button with hover & micro animations */
+    .btn-bms-primary {
+      background: linear-gradient(105deg, #2563eb 0%, #3b82f6 100%);
+      border: none;
+      color: white;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      transition: all 0.3s ease;
+      border-radius: 2rem;
+      padding: 0.85rem 0;
+      font-size: 1.05rem;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.3);
+    }
+    .btn-bms-primary:hover {
+      background: linear-gradient(105deg, #3b82f6 0%, #60a5fa 100%);
+      transform: scale(1.02);
+      box-shadow: 0 12px 28px rgba(37,99,235,0.4);
+      color: white;
+    }
+    .btn-bms-primary:active {
+      transform: scale(0.98);
+    }
+
+    /* link styling */
+    .bms-link {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+    .bms-link:hover {
+      color: #93c5fd;
+      text-shadow: 0 0 5px rgba(96,165,250,0.4);
+      text-decoration: underline;
+    }
+
+    /* custom toast floating alert */
+    .bms-toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(10, 20, 35, 0.96);
+      backdrop-filter: blur(12px);
+      border-left: 5px solid #3b82f6;
+      padding: 0.85rem 2rem;
+      border-radius: 60px;
+      color: white;
+      font-weight: 500;
+      z-index: 999;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      transition: all 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .bms-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    /* password toggle button style */
+    .toggle-bms-pwd {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-left: none;
+      border-radius: 0 1rem 1rem 0 !important;
+      color: #60a5fa;
+      transition: 0.2s;
+    }
+    .toggle-bms-pwd:hover {
+      background: rgba(59,130,246,0.2);
+      color: #93c5fd;
+    }
+
+    /* entry animation for login card */
+    @keyframes cardRise {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .bms-login-card {
+      animation: cardRise 0.65s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+    }
+
+    /* responsive adjustments */
+    @media (max-width: 640px) {
+      .bms-login-card {
+        margin: 1rem;
+        padding: 1.6rem !important;
+      }
+      .btn-bms-primary {
+        font-size: 0.9rem;
+      }
+    }
+    /* custom checkbox accent */
+    .form-check-input:checked {
+      background-color: #3b82f6;
+      border-color: #3b82f6;
+    }
+    .form-check-input:focus {
+      box-shadow: 0 0 0 2px #60a5fa;
+    }
+    /* subtle hover icon scaling */
+    .bms-login-card:hover .bank-icon-glow {
+      filter: drop-shadow(0 0 6px #3b82f6);
+    }
+  </style>
+</head>
+<body class="antialiased flex items-center justify-center min-h-screen relative">
+
+  <!-- Animated Background Shapes Layer (floating particles enrich hover) -->
+  <div class="bg-float-shapes">
+    <div class="float-glow w-[450px] h-[450px] top-[-150px] left-[-120px]" style="animation-duration: 27s;"></div>
+    <div class="float-glow w-[600px] h-[600px] bottom-[-200px] right-[-180px]" style="animation-duration: 32s; animation-delay: 0.5s;"></div>
+    <div class="float-glow w-[320px] h-[320px] top-[45%] left-[75%]" style="animation-duration: 21s; animation-delay: 1s;"></div>
+    <div class="float-glow w-[280px] h-[280px] bottom-[18%] left-[5%]" style="animation-duration: 25s; animation-delay: 0.2s;"></div>
+  </div>
+
+  <div class="container relative z-10 px-3 sm:px-4">
+    <div class="row justify-content-center align-items-center min-vh-100">
+      <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 col-12">
+        <!-- MAIN LOGIN DIV : Bank Management System theme with full hover & animation -->
+        <div class="bms-login-card p-4 p-md-5 w-100">
+          <!-- Header with Bank Management System identity -->
+          <div class="text-center mb-4">
+            <div class="inline-block p-3 rounded-full bg-gradient-to-br from-blue-600/20 to-indigo-500/20 mb-3">
+              <i class="fas fa-building-columns text-5xl text-blue-400 bank-icon-glow transition-all duration-300"></i>
+            </div>
+            <h2 class="text-white text-3xl fw-extrabold tracking-tight bg-gradient-to-r from-white to-blue-300 bg-clip-text text-transparent">Bank Management System</h2>
+            <p class="text-gray-300 mt-1 fw-light">Enterprise Administration Portal</p>
+            <div class="w-12 h-1 bg-gradient-to-r from-blue-500 to-indigo-400 mx-auto rounded-full mt-2"></div>
+          </div>
+
+          <!-- Bootstrap + Tailwind Form -->
+          <form id="bmsLoginForm" action="#" method="post" class="mt-2">
+            <!-- Staff ID / Username Field -->
+            <div class="mb-4">
+              <label class="form-label text-gray-200 fw-semibold mb-2"><i class="fas fa-user-tie me-1 text-blue-400"></i> Username / Employee ID</label>
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text bg-white/5 border border-white/20 border-r-0 rounded-l-2xl text-blue-400"><i class="fas fa-id-badge"></i></span>
+                <input type="text" class="form-control input-bms rounded-r-2xl rounded-l-none" id="loginUsername" placeholder="admin / manager.john / BMS-1024" required>
+              </div>
+            </div>
+
+            <!-- Password Field with show/hide toggle -->
+            <div class="mb-4">
+              <label class="form-label text-gray-200 fw-semibold mb-2"><i class="fas fa-lock me-1 text-blue-400"></i> Secure Access Key</label>
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text bg-white/5 border border-white/20 border-r-0 rounded-l-2xl text-blue-400"><i class="fas fa-key"></i></span>
+                <input type="password" class="form-control input-bms rounded-none" id="loginPassword" placeholder="••••••••" required>
+                <button class="btn toggle-bms-pwd" type="button" id="togglePasswordBtn">
+                  <i class="far fa-eye-slash" id="pwdToggleIcon"></i>
+                </button>
+              </div>
+              <div class="form-text text-gray-400 text-xs mt-1"><i class="fas fa-shield-haltered me-1"></i> Role-based access · 256-bit encrypted</div>
+            </div>
+
+            <!-- Options Row: Remember me & Forgot Password -->
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+              <div class="form-check">
+                <input class="form-check-input bg-transparent border-blue-400 cursor-pointer" type="checkbox" id="rememberCheckbox">
+                <label class="form-check-label text-gray-300 small" for="rememberCheckbox">
+                  <i class="far fa-clock me-1"></i> Keep session active
+                </label>
+              </div>
+              <a href="#" id="forgotPasswordLink" class="bms-link small fw-semibold"><i class="fas fa-unlock-keyhole me-1"></i> Reset credentials</a>
+            </div>
+
+            <!-- Sign In Button -->
+            <button type="submit" id="signInBtn" class="btn btn-bms-primary w-100 d-flex align-items-center justify-content-center gap-2">
+              <i class="fas fa-sign-in-alt"></i> Access Dashboard
+            </button>
+
+            <!-- Security Footer Note -->
+            <div class="mt-4 text-center text-gray-400 text-xs border-top pt-3 border-white/10">
+              <i class="fas fa-fingerprint text-blue-400/80 me-1"></i> Multi-factor ready · Audit log active
+            </div>
+          </form>
+
+          <!-- System Badges -->
+          <div class="mt-4 d-flex flex-wrap justify-content-center gap-2">
+            <span class="badge bg-black/30 text-blue-300 px-3 py-2 rounded-pill backdrop-blur-sm"><i class="fas fa-database me-1"></i> Core Banking</span>
+            <span class="badge bg-black/30 text-blue-300 px-3 py-2 rounded-pill backdrop-blur-sm"><i class="fas fa-chart-pie me-1"></i> Analytics Suite</span>
+            <span class="badge bg-black/30 text-blue-300 px-3 py-2 rounded-pill backdrop-blur-sm"><i class="fas fa-users me-1"></i> Staff Portal</span>
+          </div>
+        </div>
+        <p class="text-center text-gray-400 text-xs mt-5 opacity-70">© Bank Management System · Hover anywhere on page to animate background · Secure login zone</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle (lightweight) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    (function() {
+      // DOM Elements
+      const form = document.getElementById('bmsLoginForm');
+      const usernameField = document.getElementById('loginUsername');
+      const passwordField = document.getElementById('loginPassword');
+      const toggleBtn = document.getElementById('togglePasswordBtn');
+      const toggleIcon = document.getElementById('pwdToggleIcon');
+      const forgotLink = document.getElementById('forgotPasswordLink');
+      const rememberChk = document.getElementById('rememberCheckbox');
+      const submitBtn = document.getElementById('signInBtn');
+
+      // Show floating notification (system message)
+      function showToastMessage(message, type = 'info') {
+        const existingToast = document.querySelector('.bms-toast');
+        if(existingToast) existingToast.remove();
+        
+        const toastDiv = document.createElement('div');
+        toastDiv.className = 'bms-toast';
+        let iconHtml = '';
+        if(type === 'success') {
+          iconHtml = '<i class="fas fa-check-circle text-emerald-400 text-xl"></i>';
+        } else if(type === 'error') {
+          iconHtml = '<i class="fas fa-exclamation-triangle text-rose-400 text-xl"></i>';
+        } else {
+          iconHtml = '<i class="fas fa-info-circle text-blue-400 text-xl"></i>';
+        }
+        toastDiv.innerHTML = `${iconHtml} <span>${message}</span>`;
+        document.body.appendChild(toastDiv);
+        
+        setTimeout(() => {
+          toastDiv.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+          toastDiv.classList.remove('show');
+          setTimeout(() => {
+            if(toastDiv && toastDiv.remove) toastDiv.remove();
+          }, 300);
+        }, 4000);
+      }
+
+      // Toggle password visibility
+      if(toggleBtn && passwordField) {
+        toggleBtn.addEventListener('click', () => {
+          const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordField.setAttribute('type', type);
+          if(type === 'text') {
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+          } else {
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+          }
+        });
+      }
+
+      // Forgot password demo simulation
+      if(forgotLink) {
+        forgotLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          showToastMessage('📧 Password reset link sent to registered email (Demo - BMS Admin)', 'info');
+        });
+      }
+
+      // Remember me demo effect
+      if(rememberChk) {
+        rememberChk.addEventListener('change', function() {
+          if(this.checked) {
+            showToastMessage('🔒 Session persistence enabled for this device', 'info');
+          } else {
+            showToastMessage('Session persistence disabled', 'info');
+          }
+        });
+      }
+
+      // Form submit: Bank Management System authentication simulation
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        
+        const username = usernameField.value.trim();
+        const password = passwordField.value.trim();
+        
+        // validation rules
+        if(username === '') {
+          showToastMessage('❌ Please enter Username / Employee ID', 'error');
+          usernameField.classList.add('border-red-500', 'border');
+          setTimeout(() => usernameField.classList.remove('border-red-500', 'border'), 1500);
+          return;
+        }
+        if(username.length < 3) {
+          showToastMessage('❌ Username must be at least 3 characters', 'error');
+          usernameField.classList.add('border-red-500');
+          setTimeout(() => usernameField.classList.remove('border-red-500'), 1500);
+          return;
+        }
+        if(password === '') {
+          showToastMessage('❌ Please enter your secure access key', 'error');
+          passwordField.classList.add('border-red-500');
+          setTimeout(() => passwordField.classList.remove('border-red-500'), 1500);
+          return;
+        }
+        if(password.length < 4) {
+          showToastMessage('❌ Password must be at least 4 characters', 'error');
+          passwordField.classList.add('border-red-500');
+          setTimeout(() => passwordField.classList.remove('border-red-500'), 1500);
+          return;
+        }
+        
+        // simulate backend verification for Bank Management System
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Verifying credentials...';
+        submitBtn.disabled = true;
+        
+        setTimeout(() => {
+          // Demo successful login (any valid credentials grant access)
+          showToastMessage(`✅ Welcome, ${username}. Accessing Bank Management System dashboard...`, 'success');
+          submitBtn.innerHTML = '<i class="fas fa-check"></i> Authorized';
+          
+          setTimeout(() => {
+            alert("🏦 BANK MANAGEMENT SYSTEM - DEMO ACCESS\n\nSuccessfully logged in as: " + username + "\nRole: System Administrator (Demo)\n\n• Manage Accounts\n• Transaction Oversight\n• Staff & Audit Reports\n\n[This is a front-end simulation. Backend integration would occur in production.]");
+            // reset button state
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+            // Optional: reset password field only for security habit
+            passwordField.value = '';
+            // but keep username for demo reference
+          }, 1300);
+        }, 1200);
+      });
+
+      // Additional UI/UX: auto focus on username
+      usernameField.focus();
+      
+      // placeholder interactive hint
+      usernameField.addEventListener('focus', () => {
+        if(usernameField.value === '') usernameField.placeholder = 'ex: admin, manager, teller123';
+      });
+      usernameField.addEventListener('blur', () => {
+        if(usernameField.value === '') usernameField.placeholder = 'admin / manager.john / BMS-1024';
+      });
+      
+      // Optional: live background info (just console.log)
+      console.log('Bank Management System | Login page ready | Background animated on page hover & login card hover effects active');
+    })();
+  </script>
+  
+  <!-- extra refinements for Tailwind + Bootstrap harmony -->
+  <style>
+    .rounded-2xl {
+      border-radius: 1rem !important;
+    }
+    .rounded-l-2xl {
+      border-top-left-radius: 1rem !important;
+      border-bottom-left-radius: 1rem !important;
+    }
+    .rounded-r-2xl {
+      border-top-right-radius: 1rem !important;
+      border-bottom-right-radius: 1rem !important;
+    }
+    .input-bms {
+      border-radius: 0rem;
+    }
+    .input-group .input-bms:not(:first-child) {
+      border-left: none;
+    }
+    /* additional smoothness for background transition */
+    body {
+      transition: background-position 0.85s ease-out;
+    }
+    /* hover on card icon glow */
+    .bank-icon-glow {
+      transition: filter 0.2s;
+    }
+    .bms-login-card:hover .bank-icon-glow {
+      filter: drop-shadow(0 0 8px #3b82f6);
+    }
+    /* make button loading state readable */
+    .btn-bms-primary:disabled {
+      opacity: 0.85;
+      cursor: not-allowed;
+    }
+  </style>
+</body>
+</html>

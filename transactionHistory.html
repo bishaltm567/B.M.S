@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Bank Management System | Transaction History</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js for analytics chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+        /* Navbar Glass Effect */
+        .navbar-glass {
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .navbar-brand {
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFFFFF, #60A5FA);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 1.6rem;
+        }
+        .nav-link {
+            color: #e2e8f0 !important;
+            transition: 0.2s;
+        }
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(59,130,246,0.2);
+            border-radius: 0.5rem;
+        }
+        /* Main Card */
+        .history-card {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            border: none;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        .history-card:hover {
+            transform: translateY(-3px);
+        }
+        /* Customer Selection */
+        .customer-select-item {
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
+        .customer-select-item:hover {
+            background: #eef2ff;
+            border-color: #3b82f6;
+            transform: translateX(5px);
+        }
+        .customer-select-item.active-customer {
+            background: #dbeafe;
+            border-color: #2563eb;
+            border-left: 4px solid #2563eb;
+        }
+        /* Transaction Table */
+        .transaction-table-wrapper {
+            border-radius: 1.2rem;
+            overflow: hidden;
+        }
+        .table-transaction th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .badge-deposit {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-weight: 600;
+        }
+        .badge-withdraw {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-weight: 600;
+        }
+        .badge-loan {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-weight: 600;
+        }
+        .filter-input {
+            border-radius: 2rem;
+            padding: 0.6rem 1.2rem;
+            border: 1.5px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .filter-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+            outline: none;
+        }
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+        }
+        .summary-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 1.2rem;
+            transition: transform 0.2s;
+        }
+        .summary-card:hover {
+            transform: translateY(-3px);
+        }
+        @media (max-width: 768px) {
+            .history-card {
+                margin: 1rem;
+                padding: 1rem !important;
+            }
+        }
+        .chart-container {
+            max-height: 250px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-glass sticky-top py-3">
+        <div class="container px-4">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-building-columns me-2 text-blue-400"></i> 
+                BankMS<span class="text-blue-400"> Elite</span>
+            </a>
+            <button class="navbar-toggler bg-white/10 border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white fw-semibold bg-primary/20 rounded-pill px-3" href="#"><i class="fas fa-history me-1"></i> Transaction History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-users me-1"></i> Customers</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container py-5 my-3">
+        <div class="row g-4">
+            <!-- Left Panel: Customer Selection -->
+            <div class="col-lg-4">
+                <div class="history-card p-4 h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="fas fa-users fs-4 text-primary"></i>
+                        <h4 class="fw-bold mb-0">Select Customer</h4>
+                    </div>
+                    <p class="text-muted small mb-3">Choose a customer to view their complete transaction history.</p>
+                    <div class="mb-3">
+                        <input type="text" id="customerSearchInput" class="form-control form-control-sm filter-input" placeholder="🔍 Search by name, account, or ID...">
+                    </div>
+                    <div id="customerListContainer" style="max-height: 550px; overflow-y: auto;">
+                        <div class="text-center py-4 text-muted">Loading customers...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Transaction History & Analytics -->
+            <div class="col-lg-8">
+                <div class="history-card p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <div class="bg-primary/10 d-inline-block p-3 rounded-3xl mb-2">
+                            <i class="fas fa-receipt fa-3x text-primary"></i>
+                        </div>
+                        <h2 class="fw-bold text-dark">Transaction History</h2>
+                        <p class="text-muted">Complete record of all deposits, withdrawals, and loan transactions.</p>
+                        <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+                    </div>
+
+                    <div id="noCustomerSelected" class="alert alert-info text-center">
+                        <i class="fas fa-info-circle me-2"></i> Please select a customer from the left panel to view their transaction history.
+                    </div>
+
+                    <div id="historyPanel" style="display: none;">
+                        <!-- Customer Info Summary -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="summary-card p-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fas fa-user-circle fa-3x text-blue-400"></i>
+                                        <div>
+                                            <small class="text-gray-400">Customer Name</small>
+                                            <h5 class="text-white mb-0" id="summaryName">-</h5>
+                                            <small class="text-gray-400" id="summaryId">ID: -</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="summary-card p-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fas fa-university fa-3x text-emerald-400"></i>
+                                        <div>
+                                            <small class="text-gray-400">Account Number</small>
+                                            <h6 class="text-white mb-0" id="summaryAccount">-</h6>
+                                            <small class="text-gray-400">Current Balance: <span id="summaryBalance" class="text-emerald-400 fw-bold">$0.00</span></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filter & Stats Row -->
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                            <div class="d-flex gap-2">
+                                <select id="typeFilter" class="form-select form-select-sm w-auto rounded-pill">
+                                    <option value="all">All Transactions</option>
+                                    <option value="deposit">Deposits</option>
+                                    <option value="withdraw">Withdrawals</option>
+                                    <option value="loan">Loans</option>
+                                </select>
+                                <input type="date" id="dateFilter" class="form-control form-control-sm w-auto rounded-pill">
+                            </div>
+                            <div>
+                                <span class="badge bg-primary/10 text-primary px-3 py-2 rounded-pill" id="transactionCount">0 transactions</span>
+                            </div>
+                        </div>
+
+                        <!-- Transaction Table -->
+                        <div class="transaction-table-wrapper border rounded-4 bg-white">
+                            <div class="table-responsive">
+                                <table class="table table-transaction table-hover align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Date & Time</th>
+                                            <th>Type</th>
+                                            <th>Amount</th>
+                                            <th>Description</th>
+                                            <th>Balance After</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transactionsTableBody">
+                                        <tr><td colspan="5" class="text-center py-4 text-muted">No transactions found</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Chart Section -->
+                        <div class="mt-4">
+                            <h6 class="fw-semibold mb-3"><i class="fas fa-chart-line me-2 text-primary"></i>Monthly Transaction Overview</h6>
+                            <div class="chart-container">
+                                <canvas id="transactionChart" style="max-height: 250px; width: 100%;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5 py-4 text-center">
+        <div class="container">
+            <p class="mb-0 small">&copy; 2025 Bank Management System — Complete Transaction History. All records are auditable.</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // ---------- MOCK DATABASE: Customers with rich transaction history ----------
+        let customersData = [
+            { 
+                id: 1001, customerId: "CUST1001", fullName: "Johnathan Michael Doe", accountNumber: "BMS-4829173645", 
+                mobile: "+1 212-555-1234", email: "john.doe@email.com", balance: 15280.75, status: "Active",
+                transactions: [
+                    { id: 1, date: "2025-06-15 09:30:00", type: "deposit", amount: 2500.00, description: "Salary deposit - June", newBalance: 15280.75 },
+                    { id: 2, date: "2025-06-10 14:20:00", type: "withdraw", amount: 500.00, description: "ATM withdrawal", newBalance: 12780.75 },
+                    { id: 3, date: "2025-06-05 11:45:00", type: "deposit", amount: 1000.00, description: "Check deposit", newBalance: 13280.75 },
+                    { id: 4, date: "2025-05-28 16:10:00", type: "withdraw", amount: 1200.00, description: "Online transfer", newBalance: 12280.75 },
+                    { id: 5, date: "2025-05-20 10:00:00", type: "loan", amount: 5000.00, description: "Personal Loan Approved", newBalance: 13480.75 },
+                    { id: 6, date: "2025-05-15 09:30:00", type: "deposit", amount: 2500.00, description: "Salary deposit - May", newBalance: 8480.75 }
+                ]
+            },
+            { 
+                id: 1002, customerId: "CUST1002", fullName: "Sarah Johnson", accountNumber: "BMS-5938264712", 
+                mobile: "+1 310-555-9876", email: "sarah.j@email.com", balance: 8750.25, status: "Active",
+                transactions: [
+                    { id: 1, date: "2025-06-14 09:15:00", type: "deposit", amount: 1500.00, description: "Check deposit", newBalance: 8750.25 },
+                    { id: 2, date: "2025-06-12 13:40:00", type: "withdraw", amount: 200.00, description: "POS purchase", newBalance: 7250.25 },
+                    { id: 3, date: "2025-06-01 10:20:00", type: "deposit", amount: 3000.00, description: "Business income", newBalance: 7450.25 },
+                    { id: 4, date: "2025-05-25 11:00:00", type: "loan", amount: 10000.00, description: "Home Improvement Loan", newBalance: 4450.25 }
+                ]
+            },
+            { 
+                id: 1003, customerId: "CUST1003", fullName: "Priya Sharma", accountNumber: "BMS-7049381526", 
+                mobile: "+91 98765 43210", email: "priya.sharma@email.com", balance: 34500.00, status: "Active",
+                transactions: [
+                    { id: 1, date: "2025-06-13 11:45:00", type: "deposit", amount: 5000.00, description: "Business revenue", newBalance: 34500.00 },
+                    { id: 2, date: "2025-06-10 15:30:00", type: "withdraw", amount: 1000.00, description: "Cash withdrawal", newBalance: 29500.00 },
+                    { id: 3, date: "2025-06-05 09:00:00", type: "deposit", amount: 8500.00, description: "Client payment", newBalance: 30500.00 }
+                ]
+            },
+            { 
+                id: 1004, customerId: "CUST1004", fullName: "Michael Chen", accountNumber: "BMS-8150492637", 
+                mobile: "+1 408-555-7890", email: "michael.chen@email.com", balance: 25600.75, status: "Active",
+                transactions: [
+                    { id: 1, date: "2025-06-12 16:20:00", type: "deposit", amount: 4200.00, description: "Stock dividend", newBalance: 25600.75 },
+                    { id: 2, date: "2025-06-08 10:15:00", type: "withdraw", amount: 300.00, description: "ATM withdrawal", newBalance: 21400.75 },
+                    { id: 3, date: "2025-06-01 14:00:00", type: "loan", amount: 15000.00, description: "Education Loan", newBalance: 21700.75 }
+                ]
+            },
+            { 
+                id: 1005, customerId: "CUST1005", fullName: "Oliver Smith", accountNumber: "BMS-9261503748", 
+                mobile: "+44 20 7946 0456", email: "oliver.smith@email.com", balance: 52300.00, status: "Active",
+                transactions: [
+                    { id: 1, date: "2025-06-11 09:30:00", type: "deposit", amount: 8000.00, description: "Investment return", newBalance: 52300.00 },
+                    { id: 2, date: "2025-06-07 12:45:00", type: "withdraw", amount: 2500.00, description: "Property tax payment", newBalance: 44300.00 },
+                    { id: 3, date: "2025-06-03 15:20:00", type: "deposit", amount: 12000.00, description: "Consulting fee", newBalance: 46800.00 }
+                ]
+            }
+        ];
+
+        let currentSelectedCustomer = null;
+        let transactionChart = null;
+
+        // Helper: Escape HTML
+        function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+        // Format Currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount);
+        }
+
+        // Format Date
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleString();
+        }
+
+        // Render Customer List
+        function renderCustomerList(filterText = "") {
+            const container = document.getElementById('customerListContainer');
+            const filterLower = filterText.toLowerCase().trim();
+            let filtered = customersData.filter(c => 
+                c.fullName.toLowerCase().includes(filterLower) ||
+                c.customerId.toLowerCase().includes(filterLower) ||
+                c.accountNumber.toLowerCase().includes(filterLower) ||
+                c.mobile.toLowerCase().includes(filterLower)
+            );
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-4 text-muted"><i class="fas fa-search"></i> No matching customers</div>`;
+                return;
+            }
+            
+            let html = `<div class="list-group list-group-flush bg-transparent">`;
+            filtered.forEach(customer => {
+                const activeClass = (currentSelectedCustomer && currentSelectedCustomer.id === customer.id) ? 'active-customer' : '';
+                html += `
+                    <div class="customer-select-item p-3 mb-2 ${activeClass}" data-customer-id="${customer.id}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-user-circle text-primary me-2"></i>
+                                <strong class="text-dark">${escapeHtml(customer.fullName)}</strong>
+                                <div class="small text-muted">${escapeHtml(customer.customerId)} | ${escapeHtml(customer.accountNumber)}</div>
+                            </div>
+                            <div class="text-end">
+                                <span class="fw-semibold text-primary">${formatCurrency(customer.balance)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+            
+            // attach click events
+            document.querySelectorAll('.customer-select-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    const id = parseInt(el.getAttribute('data-customer-id'));
+                    selectCustomer(id);
+                });
+            });
+        }
+
+        // Select Customer and Load History
+        function selectCustomer(customerId) {
+            const customer = customersData.find(c => c.id === customerId);
+            if (!customer) return;
+            currentSelectedCustomer = customer;
+            
+            // Update UI
+            document.getElementById('noCustomerSelected').style.display = 'none';
+            document.getElementById('historyPanel').style.display = 'block';
+            
+            document.getElementById('summaryName').innerText = customer.fullName;
+            document.getElementById('summaryId').innerHTML = `ID: ${customer.customerId}`;
+            document.getElementById('summaryAccount').innerText = customer.accountNumber;
+            document.getElementById('summaryBalance').innerText = formatCurrency(customer.balance);
+            
+            // Reset filters
+            document.getElementById('typeFilter').value = 'all';
+            document.getElementById('dateFilter').value = '';
+            
+            // Render transactions
+            renderTransactions();
+            
+            // Update chart
+            updateChart(customer);
+            
+            // Highlight selected customer
+            renderCustomerList(document.getElementById('customerSearchInput').value);
+        }
+
+        // Render filtered transactions
+        function renderTransactions() {
+            if (!currentSelectedCustomer) return;
+            
+            const typeFilter = document.getElementById('typeFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            
+            let filtered = [...currentSelectedCustomer.transactions];
+            
+            if (typeFilter !== 'all') {
+                filtered = filtered.filter(t => t.type === typeFilter);
+            }
+            
+            if (dateFilter) {
+                filtered = filtered.filter(t => t.date.startsWith(dateFilter));
+            }
+            
+            // Sort by date descending (newest first)
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            const tbody = document.getElementById('transactionsTableBody');
+            document.getElementById('transactionCount').innerText = `${filtered.length} transactions`;
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No transactions found for the selected filters</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            filtered.forEach(txn => {
+                let badgeClass = '';
+                let typeText = '';
+                if (txn.type === 'deposit') {
+                    badgeClass = 'badge-deposit';
+                    typeText = '<i class="fas fa-arrow-down me-1"></i> Deposit';
+                } else if (txn.type === 'withdraw') {
+                    badgeClass = 'badge-withdraw';
+                    typeText = '<i class="fas fa-arrow-up me-1"></i> Withdrawal';
+                } else {
+                    badgeClass = 'badge-loan';
+                    typeText = '<i class="fas fa-hand-holding-heart me-1"></i> Loan';
+                }
+                
+                const amountClass = (txn.type === 'deposit' || txn.type === 'loan') ? 'text-emerald-600 fw-bold' : 'text-red-600 fw-bold';
+                const sign = (txn.type === 'deposit' || txn.type === 'loan') ? '+' : '-';
+                
+                html += `
+                    <tr>
+                        <td class="text-nowrap">${formatDate(txn.date)}</td>
+                        <td><span class="${badgeClass}">${typeText}</span></td>
+                        <td class="${amountClass}">${sign} ${formatCurrency(txn.amount)}</td>
+                        <td>${escapeHtml(txn.description)}</td>
+                        <td class="fw-semibold">${formatCurrency(txn.newBalance)}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // Update Chart (Monthly aggregation)
+        function updateChart(customer) {
+            const ctx = document.getElementById('transactionChart').getContext('2d');
+            
+            // Aggregate by month
+            const monthlyData = {};
+            customer.transactions.forEach(txn => {
+                const month = txn.date.substring(0, 7); // YYYY-MM
+                if (!monthlyData[month]) {
+                    monthlyData[month] = { deposit: 0, withdraw: 0, loan: 0 };
+                }
+                if (txn.type === 'deposit') monthlyData[month].deposit += txn.amount;
+                else if (txn.type === 'withdraw') monthlyData[month].withdraw += txn.amount;
+                else if (txn.type === 'loan') monthlyData[month].loan += txn.amount;
+            });
+            
+            const months = Object.keys(monthlyData).sort();
+            const deposits = months.map(m => monthlyData[m].deposit);
+            const withdrawals = months.map(m => monthlyData[m].withdraw);
+            const loans = months.map(m => monthlyData[m].loan);
+            
+            if (transactionChart) {
+                transactionChart.destroy();
+            }
+            
+            transactionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: 'Deposits',
+                            data: deposits,
+                            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Withdrawals',
+                            data: withdrawals,
+                            backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Loans',
+                            data: loans,
+                            backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'top', labels: { font: { size: 11 } } },
+                        tooltip: { callbacks: { label: function(context) { return `${context.dataset.label}: ${formatCurrency(context.raw)}`; } } }
+                    },
+                    scales: { y: { ticks: { callback: function(value) { return '$' + value.toLocaleString(); } } } }
+                }
+            });
+        }
+
+        // Event Listeners
+        document.getElementById('customerSearchInput').addEventListener('input', (e) => {
+            renderCustomerList(e.target.value);
+        });
+        
+        document.getElementById('typeFilter').addEventListener('change', () => {
+            renderTransactions();
+        });
+        
+        document.getElementById('dateFilter').addEventListener('change', () => {
+            renderTransactions();
+        });
+        
+        // Initial render
+        renderCustomerList("");
+        document.getElementById('historyPanel').style.display = 'none';
+    </script>
+    <style>
+        .rounded-3xl { border-radius: 1.5rem; }
+        .customer-select-item { transition: all 0.2s; cursor: pointer; background: white; border-radius: 1rem; margin-bottom: 0.5rem; }
+        .customer-select-item.active-customer { background: linear-gradient(95deg, #eef2ff, #dbeafe); border-left: 4px solid #2563eb; }
+        .customer-select-item:hover { background: #f1f5f9; transform: translateX(5px); }
+        .badge-deposit, .badge-withdraw, .badge-loan { font-size: 0.75rem; font-weight: 600; }
+        .table-transaction tbody tr:hover { background-color: #f8fafc; }
+        .summary-card { transition: all 0.2s; }
+    </style>
+</body>
+</html>

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Bank Management System | Update Branch Details</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Select2 for better dropdown -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        /* Navbar Glass Effect */
+        .navbar-glass {
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .navbar-brand {
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFFFFF, #60A5FA);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 1.6rem;
+        }
+        .nav-link {
+            color: #e2e8f0 !important;
+            transition: 0.2s;
+        }
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(59,130,246,0.2);
+            border-radius: 0.5rem;
+        }
+        /* Main Card */
+        .update-card {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            border: none;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        .update-card:hover {
+            transform: translateY(-3px);
+        }
+        /* Branch Selection Card */
+        .branch-select-card {
+            background: #f8fafc;
+            border-radius: 1.2rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .branch-item {
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 1rem;
+            border: 1px solid transparent;
+        }
+        .branch-item:hover {
+            background: #eef2ff;
+            border-color: #3b82f6;
+            transform: translateX(5px);
+        }
+        .branch-item.active-branch {
+            background: #dbeafe;
+            border-color: #2563eb;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.15);
+        }
+        .form-control, .form-select {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            transition: all 0.2s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+            outline: none;
+        }
+        .btn-update {
+            background: linear-gradient(105deg, #2563eb, #3b82f6);
+            border: none;
+            border-radius: 2rem;
+            padding: 0.8rem 1.8rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            box-shadow: 0 8px 14px -6px rgba(37,99,235,0.3);
+        }
+        .btn-update:hover {
+            transform: scale(1.02);
+            background: linear-gradient(105deg, #3b82f6, #60a5fa);
+        }
+        .btn-reset-update {
+            border-radius: 2rem;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            border: 2px solid #cbd5e1;
+            background: white;
+        }
+        .staff-entry {
+            background: #f8fafc;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #3b82f6;
+        }
+        .add-staff-btn {
+            background: #eff6ff;
+            border: 2px dashed #3b82f6;
+            border-radius: 1rem;
+            padding: 0.6rem;
+            color: #2563eb;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .add-staff-btn:hover {
+            background: #dbeafe;
+        }
+        .remove-staff {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .remove-staff:hover {
+            color: #dc2626;
+            transform: scale(1.1);
+        }
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+        }
+        @media (max-width: 768px) {
+            .update-card {
+                margin: 1rem;
+                padding: 1.2rem !important;
+            }
+        }
+        .toast-custom {
+            border-radius: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-glass sticky-top py-3">
+        <div class="container px-4">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-building-columns me-2 text-blue-400"></i> 
+                BankMS<span class="text-blue-400"> Elite</span>
+            </a>
+            <button class="navbar-toggler bg-white/10 border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-navbar="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white fw-semibold bg-primary/20 rounded-pill px-3" href="#"><i class="fas fa-edit me-1"></i> Update Branch</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-code-branch me-1"></i> All Branches</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Update Branch Section -->
+    <div class="container py-5 my-3">
+        <div class="row g-4">
+            <!-- Left Panel: Branch Selection List -->
+            <div class="col-lg-4">
+                <div class="update-card p-4 h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="fas fa-list-ul fs-4 text-primary"></i>
+                        <h4 class="fw-bold mb-0">Select Branch</h4>
+                    </div>
+                    <p class="text-muted small mb-3">Click on any branch below to load its details for updating.</p>
+                    <div class="mb-3">
+                        <input type="text" id="branchSearchList" class="form-control form-control-sm" placeholder="🔍 Filter branches by name/code/city...">
+                    </div>
+                    <div id="branchListContainer" style="max-height: 500px; overflow-y: auto;">
+                        <!-- Dynamic branch list will be injected here -->
+                        <div class="text-center py-4 text-muted">Loading branches...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Update Form (Editable Details) -->
+            <div class="col-lg-8">
+                <div class="update-card p-4 p-md-5">
+                    <div class="text-center mb-3">
+                        <div class="bg-blue-100 d-inline-block p-3 rounded-3xl mb-2">
+                            <i class="fas fa-pen-to-square fa-3x text-blue-600"></i>
+                        </div>
+                        <h2 class="fw-bold text-dark">Update Branch Details</h2>
+                        <p class="text-muted">Modify branch information, contact, address and staff members.</p>
+                        <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+                    </div>
+
+                    <div id="noBranchSelected" class="alert alert-info text-center">
+                        <i class="fas fa-info-circle me-2"></i> Please select a branch from the left panel to update its details.
+                    </div>
+
+                    <form id="updateBranchForm" style="display: none;">
+                        <input type="hidden" id="updateBranchId">
+                        
+                        <!-- Basic Branch Information -->
+                        <div class="mb-4 pb-2 border-bottom">
+                            <h5 class="fw-semibold"><i class="fas fa-building me-2 text-primary"></i> Branch Core Information</h5>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Branch Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="branchName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Branch Code <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="branchCode" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Address Line</label>
+                                <input type="text" class="form-control" id="addressLine">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">City <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="city" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">State</label>
+                                <input type="text" class="form-control" id="state">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">ZIP Code</label>
+                                <input type="text" class="form-control" id="zipcode">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Country</label>
+                                <select class="form-select" id="country">
+                                    <option>United States</option><option>United Kingdom</option><option>Canada</option>
+                                    <option>Australia</option><option>India</option><option>Germany</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Contact & Operational Info -->
+                        <div class="mt-4 mb-3 pb-2 border-bottom">
+                            <h5 class="fw-semibold"><i class="fas fa-phone-alt me-2 text-primary"></i> Contact & Operations</h5>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Mobile Number <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="mobile" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Landline</label>
+                                <input type="tel" class="form-control" id="landline">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Working Hours</label>
+                                <input type="text" class="form-control" id="workingHours" placeholder="Mon-Fri: 9AM-5PM">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Branch Status</label>
+                                <select class="form-select" id="branchStatus">
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="Under Maintenance">Under Maintenance</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Establishment Date</label>
+                                <input type="date" class="form-control" id="estDate">
+                            </div>
+                        </div>
+
+                        <!-- Staff Details Dynamic -->
+                        <div class="mt-4 mb-3 pb-2 border-bottom d-flex justify-content-between align-items-center">
+                            <h5 class="fw-semibold mb-0"><i class="fas fa-users me-2 text-primary"></i> Staff Members</h5>
+                            <button type="button" id="addUpdateStaffBtn" class="btn btn-sm add-staff-btn px-3"><i class="fas fa-plus-circle me-1"></i> Add Staff</button>
+                        </div>
+                        <div id="updateStaffContainer">
+                            <!-- Staff entries will be dynamically injected -->
+                        </div>
+                        <div class="form-text mb-3">Update staff details: name, designation, contact.</div>
+
+                        <!-- Additional Notes -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Additional Notes / Facilities</label>
+                            <textarea class="form-control" id="branchNotes" rows="2" placeholder="Any special facilities like locker, ATM, etc."></textarea>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex flex-wrap gap-3 justify-content-end mt-4">
+                            <button type="button" id="resetUpdateBtn" class="btn btn-reset-update"><i class="fas fa-undo-alt me-2"></i> Reset Changes</button>
+                            <button type="submit" class="btn btn-update text-white"><i class="fas fa-save me-2"></i> Update Branch</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5 py-4 text-center">
+        <div class="container">
+            <p class="mb-0 small">&copy; 2025 Bank Management System — Branch Update Module. Modify branch details securely.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        <div id="updateToast" class="toast align-items-center text-white bg-dark border-0 toast-custom" role="alert">
+            <div class="d-flex">
+                <div class="toast-body" id="updateToastMsg">Message</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script>
+        // ---------- MOCK BRANCH DATABASE (Bank Management System) ----------
+        let branchesDatabase = [
+            { id: 1, name: "Downtown Corporate Hub", code: "BRN-DT101", address: "123 Wall Street", city: "New York", state: "NY", zipcode: "10005", country: "United States", mobile: "+1 212-555-1234", landline: "212-555-1000", email: "downtown@bankms.com", workingHours: "Mon-Fri 9AM-6PM", status: "Active", estDate: "2010-05-12", notes: "24/7 ATM, Locker facility", staff: [{ name: "Sarah Johnson", designation: "Branch Manager", contact: "sarah@bankms.com" }, { name: "Michael Chen", designation: "Operations Lead", contact: "+1 212-555-6789" }] },
+            { id: 2, name: "Uptown Financial Center", code: "BRN-UP202", address: "890 5th Avenue", city: "New York", state: "NY", zipcode: "10019", country: "United States", mobile: "+1 212-555-5678", landline: "212-555-2001", email: "uptown@bankms.com", workingHours: "Mon-Sat 9AM-7PM", status: "Active", estDate: "2015-08-22", notes: "Premium Banking Lounge", staff: [{ name: "Emily Rodriguez", designation: "Center Head", contact: "emily.r@bankms.com" }, { name: "David Kim", designation: "Customer Service Mgr", contact: "david.kim@bankms.com" }] },
+            { id: 3, name: "Silicon Valley Tech Branch", code: "BRN-SV303", address: "1000 Innovation Way", city: "San Jose", state: "CA", zipcode: "95113", country: "United States", mobile: "+1 408-555-9090", landline: "408-555-1212", email: "sv@bankms.com", workingHours: "Mon-Fri 8AM-8PM", status: "Active", estDate: "2018-11-01", notes: "Tech-focused banking, crypto desk", staff: [{ name: "Alex Morgan", designation: "Tech Branch Director", contact: "alex.m@bankms.com" }, { name: "Lisa Wang", designation: "Senior Analyst", contact: "lisa.wang@bankms.com" }] },
+            { id: 4, name: "London Canary Wharf", code: "BRN-LON404", address: "25 Bank Street", city: "London", state: "England", zipcode: "E14 5JP", country: "United Kingdom", mobile: "+44 20 7946 0123", landline: "020 7946 0999", email: "london@bankms.com", workingHours: "Mon-Fri 9AM-5PM", status: "Active", estDate: "2012-09-17", notes: "International Banking Hub", staff: [{ name: "Oliver Smith", designation: "Regional Director", contact: "oliver.s@bankms.com" }] },
+            { id: 5, name: "Mumbai Financial Hub", code: "BRN-MUM505", address: "BKC, Bandra East", city: "Mumbai", state: "Maharashtra", zipcode: "400051", country: "India", mobile: "+91 22 6123 4567", landline: "022-61234567", email: "mumbai@bankms.com", workingHours: "Mon-Sat 10AM-6PM", status: "Active", estDate: "2017-03-30", notes: "Digital Banking Centre", staff: [{ name: "Priya Sharma", designation: "Branch Head", contact: "priya.s@bankms.com" }, { name: "Rahul Mehta", designation: "Operations Manager", contact: "rahul.m@bankms.com" }] }
+        ];
+
+        let currentSelectedBranchId = null;
+        let staffCounter = 0;
+
+        // Helper: Show toast notification
+        function showToast(message, type = 'success') {
+            const toastEl = document.getElementById('updateToast');
+            const toastMsg = document.getElementById('updateToastMsg');
+            toastMsg.innerText = message;
+            if (type === 'success') {
+                toastEl.classList.remove('bg-danger');
+                toastEl.classList.add('bg-success');
+            } else {
+                toastEl.classList.remove('bg-success');
+                toastEl.classList.add('bg-danger');
+            }
+            const bsToast = new bootstrap.Toast(toastEl, { delay: 3500, autohide: true });
+            bsToast.show();
+        }
+
+        // Render branch list in left panel
+        function renderBranchList(filterText = "") {
+            const container = document.getElementById('branchListContainer');
+            const filterLower = filterText.toLowerCase();
+            let filtered = branchesDatabase.filter(b => 
+                b.name.toLowerCase().includes(filterLower) ||
+                b.code.toLowerCase().includes(filterLower) ||
+                b.city.toLowerCase().includes(filterLower)
+            );
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-4 text-muted"><i class="fas fa-search"></i> No matching branches</div>`;
+                return;
+            }
+            let html = `<div class="list-group list-group-flush bg-transparent">`;
+            filtered.forEach(branch => {
+                const activeClass = (currentSelectedBranchId === branch.id) ? 'active-branch' : '';
+                html += `
+                    <div class="branch-item p-3 mb-2 ${activeClass}" data-branch-id="${branch.id}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-building text-primary me-2"></i>
+                                <strong class="text-dark">${escapeHtml(branch.name)}</strong>
+                                <div class="small text-muted">${escapeHtml(branch.code)} | ${escapeHtml(branch.city)}</div>
+                            </div>
+                            <i class="fas fa-chevron-right text-primary opacity-50"></i>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+            // attach click events
+            document.querySelectorAll('.branch-item').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    const id = parseInt(el.getAttribute('data-branch-id'));
+                    loadBranchForUpdate(id);
+                });
+            });
+        }
+
+        function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+        // Load branch data into update form
+        function loadBranchForUpdate(branchId) {
+            const branch = branchesDatabase.find(b => b.id === branchId);
+            if (!branch) return;
+            currentSelectedBranchId = branchId;
+            // show form and populate
+            document.getElementById('noBranchSelected').style.display = 'none';
+            document.getElementById('updateBranchForm').style.display = 'block';
+            
+            document.getElementById('updateBranchId').value = branch.id;
+            document.getElementById('branchName').value = branch.name;
+            document.getElementById('branchCode').value = branch.code;
+            document.getElementById('addressLine').value = branch.address || '';
+            document.getElementById('city').value = branch.city;
+            document.getElementById('state').value = branch.state || '';
+            document.getElementById('zipcode').value = branch.zipcode || '';
+            document.getElementById('country').value = branch.country || 'United States';
+            document.getElementById('mobile').value = branch.mobile;
+            document.getElementById('landline').value = branch.landline || '';
+            document.getElementById('email').value = branch.email;
+            document.getElementById('workingHours').value = branch.workingHours || '';
+            document.getElementById('branchStatus').value = branch.status;
+            document.getElementById('estDate').value = branch.estDate || '';
+            document.getElementById('branchNotes').value = branch.notes || '';
+            
+            // Populate Staff
+            const staffContainer = document.getElementById('updateStaffContainer');
+            staffContainer.innerHTML = '';
+            if (branch.staff && branch.staff.length > 0) {
+                branch.staff.forEach((staff, idx) => {
+                    addStaffEntryToForm(staff.name, staff.designation, staff.contact, idx);
+                });
+            } else {
+                addStaffEntryToForm('', '', '', 0);
+            }
+            staffCounter = branch.staff ? branch.staff.length : 1;
+            
+            // re-render branch list to highlight active
+            renderBranchList(document.getElementById('branchSearchList').value);
+            showToast(`Loaded branch: ${branch.name}`, 'success');
+        }
+
+        function addStaffEntryToForm(name = '', designation = '', contact = '', idx = null) {
+            const container = document.getElementById('updateStaffContainer');
+            const staffDiv = document.createElement('div');
+            staffDiv.className = 'staff-entry staff-entry-item mb-3';
+            const unique = Date.now() + Math.random();
+            staffDiv.setAttribute('data-staff-key', unique);
+            staffDiv.innerHTML = `
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Full Name *</label>
+                        <input type="text" class="form-control staff-name" value="${escapeHtml(name)}" placeholder="Staff name">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-semibold">Designation</label>
+                        <input type="text" class="form-control staff-designation" value="${escapeHtml(designation)}" placeholder="Role">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-semibold">Contact</label>
+                        <input type="text" class="form-control staff-contact" value="${escapeHtml(contact)}" placeholder="Phone/Email">
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <i class="fas fa-trash-alt text-danger remove-staff fs-5" style="cursor: pointer;"></i>
+                    </div>
+                </div>
+            `;
+            container.appendChild(staffDiv);
+            const removeBtn = staffDiv.querySelector('.remove-staff');
+            removeBtn.addEventListener('click', () => {
+                if (document.querySelectorAll('.staff-entry-item').length > 1) {
+                    staffDiv.remove();
+                } else {
+                    showToast("At least one staff member required.", "error");
+                }
+            });
+        }
+
+        // collect staff from form
+        function collectStaffFromForm() {
+            const staffElements = document.querySelectorAll('.staff-entry-item');
+            const staffList = [];
+            staffElements.forEach(el => {
+                const name = el.querySelector('.staff-name')?.value.trim() || '';
+                if (name !== "") {
+                    staffList.push({
+                        name: name,
+                        designation: el.querySelector('.staff-designation')?.value.trim() || '',
+                        contact: el.querySelector('.staff-contact')?.value.trim() || ''
+                    });
+                }
+            });
+            return staffList;
+        }
+
+        // Update branch function (save)
+        function updateBranchInDB() {
+            const id = parseInt(document.getElementById('updateBranchId').value);
+            if (!id) { showToast("No branch selected for update.", "error"); return; }
+            const branchIndex = branchesDatabase.findIndex(b => b.id === id);
+            if (branchIndex === -1) { showToast("Branch not found.", "error"); return; }
+            
+            const updatedStaff = collectStaffFromForm();
+            const updatedBranch = {
+                id: id,
+                name: document.getElementById('branchName').value.trim(),
+                code: document.getElementById('branchCode').value.trim(),
+                address: document.getElementById('addressLine').value.trim(),
+                city: document.getElementById('city').value.trim(),
+                state: document.getElementById('state').value.trim(),
+                zipcode: document.getElementById('zipcode').value.trim(),
+                country: document.getElementById('country').value,
+                mobile: document.getElementById('mobile').value.trim(),
+                landline: document.getElementById('landline').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                workingHours: document.getElementById('workingHours').value.trim(),
+                status: document.getElementById('branchStatus').value,
+                estDate: document.getElementById('estDate').value,
+                notes: document.getElementById('branchNotes').value.trim(),
+                staff: updatedStaff
+            };
+            if (!updatedBranch.name || !updatedBranch.code || !updatedBranch.city || !updatedBranch.mobile || !updatedBranch.email) {
+                showToast("Please fill all required fields (Name, Code, City, Mobile, Email).", "error");
+                return;
+            }
+            branchesDatabase[branchIndex] = updatedBranch;
+            renderBranchList(document.getElementById('branchSearchList').value);
+            showToast(`✅ Branch "${updatedBranch.name}" updated successfully!`, "success");
+            // reload same branch after update
+            loadBranchForUpdate(id);
+        }
+
+        // Event Listeners
+        document.getElementById('addUpdateStaffBtn').addEventListener('click', () => {
+            addStaffEntryToForm('', '', '', null);
+        });
+        
+        document.getElementById('updateBranchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            updateBranchInDB();
+        });
+        
+        document.getElementById('resetUpdateBtn').addEventListener('click', () => {
+            if (currentSelectedBranchId) {
+                loadBranchForUpdate(currentSelectedBranchId);
+                showToast("Form reset to last saved state.", "info");
+            } else {
+                showToast("No branch selected.", "error");
+            }
+        });
+        
+        document.getElementById('branchSearchList').addEventListener('input', (e) => {
+            renderBranchList(e.target.value);
+        });
+        
+        // initial render
+        renderBranchList("");
+        // Default message: no branch selected, form hidden
+        document.getElementById('updateBranchForm').style.display = 'none';
+    </script>
+    <style>
+        .rounded-3xl { border-radius: 1.5rem; }
+        .bg-blue-100 { background-color: #dbeafe; }
+        .branch-item { transition: all 0.2s; cursor: pointer; background: white; border-radius: 1rem; margin-bottom: 0.5rem; }
+        .branch-item.active-branch { background: linear-gradient(95deg, #eef2ff, #dbeafe); border-left: 4px solid #2563eb; }
+        .branch-item:hover { background: #f1f5f9; transform: translateX(5px); }
+        .staff-entry { background: #f9fafb; }
+        .remove-staff:hover { color: #dc2626; }
+        .btn-reset-update:hover { background: #f3f4f6; border-color: #94a3b8; }
+    </style>
+</body>
+</html>

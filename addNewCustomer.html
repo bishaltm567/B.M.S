@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Bank Management System | Add New Customer</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Select2 for dropdown enhancements -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+        /* Navbar Glass Effect */
+        .navbar-glass {
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .navbar-brand {
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFFFFF, #60A5FA);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 1.6rem;
+        }
+        .nav-link {
+            color: #e2e8f0 !important;
+            transition: 0.2s;
+        }
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(59,130,246,0.2);
+            border-radius: 0.5rem;
+        }
+        /* Main Form Card */
+        .form-card {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            border: none;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        .form-card:hover {
+            transform: translateY(-3px);
+        }
+        .form-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .form-control, .form-select {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            transition: all 0.2s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+            outline: none;
+        }
+        .btn-submit {
+            background: linear-gradient(105deg, #059669, #10b981);
+            border: none;
+            border-radius: 2rem;
+            padding: 0.8rem 1.8rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            box-shadow: 0 8px 14px -6px rgba(5,150,105,0.3);
+        }
+        .btn-submit:hover {
+            transform: scale(1.02);
+            background: linear-gradient(105deg, #10b981, #34d399);
+            box-shadow: 0 10px 20px -5px rgba(5,150,105,0.4);
+        }
+        .btn-reset {
+            border-radius: 2rem;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            border: 2px solid #cbd5e1;
+            background: white;
+            transition: all 0.2s;
+        }
+        .btn-reset:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+        /* Photo Upload Preview */
+        .photo-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #3b82f6;
+            background: #f1f5f9;
+        }
+        .upload-label {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .upload-label:hover {
+            background: #f8fafc;
+            border-color: #3b82f6;
+        }
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+        }
+        @media (max-width: 768px) {
+            .form-card {
+                margin: 1rem;
+                padding: 1.5rem !important;
+            }
+        }
+        .toast-custom {
+            border-radius: 1rem;
+        }
+        .section-title {
+            border-left: 4px solid #3b82f6;
+            padding-left: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-glass sticky-top py-3">
+        <div class="container px-4">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-building-columns me-2 text-blue-400"></i> 
+                BankMS<span class="text-blue-400"> Elite</span>
+            </a>
+            <button class="navbar-toggler bg-white/10 border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-users me-1"></i> Customers</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white fw-semibold bg-primary/20 rounded-pill px-3" href="#"><i class="fas fa-user-plus me-1"></i> Add Customer</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container: Add New Customer -->
+    <div class="container py-5 my-3">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb bg-transparent p-0">
+                        <li class="breadcrumb-item"><a href="#" class="text-primary text-decoration-none">Customer Management</a></li>
+                        <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">Register New Customer</li>
+                    </ol>
+                </nav>
+
+                <!-- Main Form Card -->
+                <div class="form-card p-4 p-md-5 shadow-lg">
+                    <div class="text-center mb-4">
+                        <div class="bg-emerald-100 d-inline-block p-3 rounded-3xl mb-2">
+                            <i class="fas fa-user-plus fa-3x text-emerald-600"></i>
+                        </div>
+                        <h2 class="fw-bold text-dark mt-2">Add New Customer</h2>
+                        <p class="text-muted">Enter complete customer information to open a new account in the Bank Management System.</p>
+                        <div class="w-24 h-1 bg-emerald-500 mx-auto rounded-full"></div>
+                    </div>
+
+                    <form id="addCustomerForm" action="#" method="post" class="needs-validation" novalidate>
+                        <!-- ========== SECTION 1: PERSONAL INFORMATION ========== -->
+                        <div class="mb-4 pb-2 border-bottom">
+                            <h5 class="fw-semibold section-title"><i class="fas fa-user-circle me-2 text-primary"></i> Personal Information</h5>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-user me-1 text-primary"></i> Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="fullName" placeholder="e.g., Johnathan Michael Doe" required>
+                                <div class="invalid-feedback">Full name is required.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-id-card me-1 text-primary"></i> Date of Birth <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="dob" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-venus-mars me-1 text-primary"></i> Gender</label>
+                                <select class="form-select" id="gender">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-flag me-1 text-primary"></i> Nationality</label>
+                                <input type="text" class="form-control" id="nationality" placeholder="e.g., American, British, Indian" value="American">
+                            </div>
+                        </div>
+
+                        <!-- ========== SECTION 2: CONTACT DETAILS ========== -->
+                        <div class="mt-5 mb-4 pb-2 border-bottom">
+                            <h5 class="fw-semibold section-title"><i class="fas fa-address-card me-2 text-primary"></i> Contact & Address</h5>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-envelope me-1 text-primary"></i> Email Address <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="email" placeholder="customer@example.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-phone-alt me-1 text-primary"></i> Mobile Number <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="mobile" placeholder="+1 9876543210" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-phone me-1 text-primary"></i> Phone (Home/Work)</label>
+                                <input type="tel" class="form-control" id="phoneAlt" placeholder="Optional">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-map-marker-alt me-1 text-primary"></i> Address Line <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="address" placeholder="Street, House No, Area" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">City <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="city" placeholder="City" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">State / Province</label>
+                                <input type="text" class="form-control" id="state" placeholder="State">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Postal Code</label>
+                                <input type="text" class="form-control" id="zipcode" placeholder="ZIP Code">
+                            </div>
+                        </div>
+
+                        <!-- ========== SECTION 3: BANK ACCOUNT DETAILS ========== -->
+                        <div class="mt-5 mb-4 pb-2 border-bottom">
+                            <h5 class="fw-semibold section-title"><i class="fas fa-university me-2 text-primary"></i> Account & Banking Details</h5>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-tag me-1 text-primary"></i> Account Type <span class="text-danger">*</span></label>
+                                <select class="form-select" id="accountType" required>
+                                    <option value="Savings">Savings Account</option>
+                                    <option value="Current">Current Account</option>
+                                    <option value="Fixed Deposit">Fixed Deposit</option>
+                                    <option value="NRI Account">NRI Account</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-code-branch me-1 text-primary"></i> Preferred Branch <span class="text-danger">*</span></label>
+                                <select class="form-select" id="branchSelect" required>
+                                    <option value="">Select Branch</option>
+                                    <option value="1">Downtown Corporate Hub (BRN-DT101)</option>
+                                    <option value="2">Uptown Financial Center (BRN-UP202)</option>
+                                    <option value="3">Silicon Valley Tech Branch (BRN-SV303)</option>
+                                    <option value="4">London Canary Wharf (BRN-LON404)</option>
+                                    <option value="5">Mumbai Financial Hub (BRN-MUM505)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-rupee-sign me-1 text-primary"></i> Initial Deposit ($) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="initialDeposit" placeholder="Minimum $100" step="0.01" value="500.00" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-id-card me-1 text-primary"></i> Nominee Name (Optional)</label>
+                                <input type="text" class="form-control" id="nominee" placeholder="Nominee full name">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label"><i class="fas fa-sticky-note me-1 text-primary"></i> Additional Notes / Occupation</label>
+                                <textarea class="form-control" id="occupationNotes" rows="2" placeholder="Occupation, source of income, etc."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- ========== SECTION 4: IDENTIFICATION DOCUMENTS ========== -->
+                        <div class="mt-5 mb-4 pb-2 border-bottom">
+                            <h5 class="fw-semibold section-title"><i class="fas fa-fingerprint me-2 text-primary"></i> KYC / Identification Documents</h5>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-id-card me-1 text-primary"></i> ID Proof Type</label>
+                                <select class="form-select" id="idType">
+                                    <option value="Passport">Passport</option>
+                                    <option value="Driver License">Driver License</option>
+                                    <option value="National ID">National ID / Aadhar</option>
+                                    <option value="PAN Card">PAN / SSN</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">ID Number</label>
+                                <input type="text" class="form-control" id="idNumber" placeholder="Document number">
+                            </div>
+                        </div>
+
+                        <!-- Photo Upload Section (preview) -->
+                        <div class="mt-4 text-center">
+                            <label class="form-label fw-semibold">Customer Photo (Optional)</label>
+                            <div class="d-flex justify-content-center">
+                                <div class="text-center">
+                                    <img id="photoPreview" class="photo-preview mb-2" src="https://ui-avatars.com/api/?background=3b82f6&color=fff&rounded=true&size=100&name=User" alt="Preview">
+                                    <div class="mt-2">
+                                        <label for="customerPhotoInput" class="btn btn-sm btn-outline-primary rounded-pill upload-label">
+                                            <i class="fas fa-camera me-1"></i> Upload Photo
+                                        </label>
+                                        <input type="file" id="customerPhotoInput" accept="image/*" style="display: none;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms & Conditions -->
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="termsCheckbox" required>
+                            <label class="form-check-label text-dark" for="termsCheckbox">
+                                I confirm that the information provided is accurate and I agree to the <a href="#" class="text-primary">Terms & Conditions</a> of the bank.
+                            </label>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-5 d-flex flex-wrap gap-3 justify-content-end">
+                            <button type="reset" class="btn btn-reset px-4"><i class="fas fa-eraser me-2"></i> Clear Form</button>
+                            <button type="submit" class="btn btn-submit text-white px-5"><i class="fas fa-save me-2"></i> Register Customer & Create Account</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Help Tip -->
+                <div class="alert alert-light mt-4 shadow-sm border-0 rounded-3">
+                    <i class="fas fa-shield-alt text-primary me-2"></i> All customer data is encrypted & stored securely. Fields marked with <span class="text-danger">*</span> are mandatory.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5 py-4 text-center">
+        <div class="container">
+            <p class="mb-0 small">&copy; 2025 Bank Management System — Customer Registration Portal. KYC compliant.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        <div id="customerToast" class="toast align-items-center text-white bg-dark border-0 toast-custom" role="alert">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMsg">Message</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script>
+        // Helper: Show toast message
+        function showToast(message, type = 'success') {
+            const toastEl = document.getElementById('customerToast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.innerText = message;
+            if (type === 'success') {
+                toastEl.classList.remove('bg-danger');
+                toastEl.classList.add('bg-success');
+            } else {
+                toastEl.classList.remove('bg-success');
+                toastEl.classList.add('bg-danger');
+            }
+            const bsToast = new bootstrap.Toast(toastEl, { delay: 4000, autohide: true });
+            bsToast.show();
+        }
+
+        // Generate random account number (simulate bank account)
+        function generateAccountNumber() {
+            const prefix = "BMS";
+            const randomNum = Math.floor(1000000000 + Math.random() * 9000000000);
+            return `${prefix}-${randomNum}`;
+        }
+
+        // Photo upload preview
+        const photoInput = document.getElementById('customerPhotoInput');
+        const photoPreview = document.getElementById('photoPreview');
+        photoInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    photoPreview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            } else {
+                photoPreview.src = "https://ui-avatars.com/api/?background=3b82f6&color=fff&rounded=true&size=100&name=User";
+            }
+        });
+
+        // Form submission handler - Add New Customer
+        const form = document.getElementById('addCustomerForm');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Basic validations
+            const fullName = document.getElementById('fullName').value.trim();
+            const dob = document.getElementById('dob').value;
+            const email = document.getElementById('email').value.trim();
+            const mobile = document.getElementById('mobile').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const accountType = document.getElementById('accountType').value;
+            const branchId = document.getElementById('branchSelect').value;
+            const initialDeposit = parseFloat(document.getElementById('initialDeposit').value);
+            const termsChecked = document.getElementById('termsCheckbox').checked;
+            
+            if (!fullName) { showToast("❌ Please enter customer's full name.", "error"); return; }
+            if (!dob) { showToast("❌ Date of birth is required.", "error"); return; }
+            if (!email || !email.includes('@')) { showToast("❌ Valid email address is required.", "error"); return; }
+            if (!mobile || mobile.length < 8) { showToast("❌ Valid mobile number is required.", "error"); return; }
+            if (!address) { showToast("❌ Address line is required.", "error"); return; }
+            if (!city) { showToast("❌ City is required.", "error"); return; }
+            if (!branchId) { showToast("❌ Please select a preferred branch.", "error"); return; }
+            if (isNaN(initialDeposit) || initialDeposit < 100) { showToast("❌ Initial deposit must be at least $100.", "error"); return; }
+            if (!termsChecked) { showToast("❌ Please accept the terms & conditions to register.", "error"); return; }
+            
+            // Age validation (minimum 18 years)
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
+            if (age < 18) { showToast("❌ Customer must be at least 18 years old.", "error"); return; }
+            
+            // Generate new account details
+            const newAccountNumber = generateAccountNumber();
+            const customerId = "CUST" + Math.floor(10000 + Math.random() * 90000);
+            const registrationDate = new Date().toISOString().split('T')[0];
+            
+            // Collect all data into customer object
+            const customerData = {
+                customerId: customerId,
+                accountNumber: newAccountNumber,
+                fullName: fullName,
+                dateOfBirth: dob,
+                gender: document.getElementById('gender').value,
+                nationality: document.getElementById('nationality').value,
+                email: email,
+                mobile: mobile,
+                alternatePhone: document.getElementById('phoneAlt').value,
+                address: address,
+                city: city,
+                state: document.getElementById('state').value,
+                zipcode: document.getElementById('zipcode').value,
+                accountType: accountType,
+                branchId: branchId,
+                initialDeposit: initialDeposit,
+                nominee: document.getElementById('nominee').value,
+                occupationNotes: document.getElementById('occupationNotes').value,
+                idProofType: document.getElementById('idType').value,
+                idNumber: document.getElementById('idNumber').value,
+                registrationDate: registrationDate,
+                status: "Active",
+                currentBalance: initialDeposit
+            };
+            
+            // Display success message with account details
+            let branchName = "";
+            const branchSelect = document.getElementById('branchSelect');
+            branchName = branchSelect.options[branchSelect.selectedIndex]?.text || "Selected Branch";
+            
+            const successMsg = `✅ CUSTOMER REGISTERED SUCCESSFULLY!\n\n👤 Customer ID: ${customerData.customerId}\n🏦 Account Number: ${customerData.accountNumber}\n📋 Name: ${customerData.fullName}\n💰 Initial Deposit: $${customerData.initialDeposit.toFixed(2)}\n📍 Branch: ${branchName}\n📅 Registration Date: ${registrationDate}\n\nAccount has been created in the Bank Management System.`;
+            alert(successMsg);
+            showToast(`Customer ${fullName} registered with A/C: ${newAccountNumber}`, "success");
+            
+            // Log to console for demo (simulate backend storage)
+            console.log("New Customer Registered:", customerData);
+            
+            // Optional: Reset form after confirmation
+            if (confirm("Do you want to register another customer?")) {
+                form.reset();
+                // reset photo preview
+                photoPreview.src = "https://ui-avatars.com/api/?background=3b82f6&color=fff&rounded=true&size=100&name=User";
+                // set default values
+                document.getElementById('accountType').value = "Savings";
+                document.getElementById('gender').value = "Male";
+                document.getElementById('nationality').value = "American";
+                document.getElementById('initialDeposit').value = "500.00";
+                document.getElementById('termsCheckbox').checked = false;
+                // set default branch optional (first option placeholder)
+                document.getElementById('branchSelect').value = "";
+                document.getElementById('fullName').focus();
+            } else {
+                // keep form as is or redirect (we'll keep)
+                showToast("Customer added successfully! You can continue or go to dashboard.", "success");
+            }
+        });
+        
+        // Reset button customization: clear all fields and reset photo
+        const resetBtn = document.querySelector('button[type="reset"]');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (confirm("Clear all customer registration fields?")) {
+                    form.reset();
+                    photoPreview.src = "https://ui-avatars.com/api/?background=3b82f6&color=fff&rounded=true&size=100&name=User";
+                    document.getElementById('accountType').value = "Savings";
+                    document.getElementById('gender').value = "Male";
+                    document.getElementById('nationality').value = "American";
+                    document.getElementById('initialDeposit').value = "500.00";
+                    document.getElementById('branchSelect').value = "";
+                    showToast("Form has been reset.", "info");
+                }
+            });
+        }
+        
+        // Bootstrap validation style (optional)
+        (function() {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+        
+        // Set default initial deposit to 500
+        document.getElementById('initialDeposit').value = "500.00";
+        
+        // Add placeholder for branch select
+        $(document).ready(function() {
+            // Make branch select more elegant (optional select2)
+            $('#branchSelect').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: 'Select branch',
+                allowClear: true
+            });
+        });
+    </script>
+    <style>
+        .rounded-3xl { border-radius: 1.5rem; }
+        .bg-emerald-100 { background-color: #d1fae5; }
+        .text-emerald-600 { color: #059669; }
+        .section-title { border-left: 4px solid #10b981; }
+        .select2-container--bootstrap-5 .select2-selection {
+            border-radius: 1rem;
+            border: 1.5px solid #e2e8f0;
+            min-height: 48px;
+        }
+        .photo-preview {
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</body>
+</html>

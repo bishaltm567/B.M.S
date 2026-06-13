@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Bank Management System | Update Customer Data</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Select2 for better dropdown -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            min-height: 100vh;
+        }
+        /* Navbar Glass Effect */
+        .navbar-glass {
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .navbar-brand {
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFFFFF, #60A5FA);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 1.6rem;
+        }
+        .nav-link {
+            color: #e2e8f0 !important;
+            transition: 0.2s;
+        }
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(59,130,246,0.2);
+            border-radius: 0.5rem;
+        }
+        /* Main Card */
+        .update-card {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            border: none;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        .update-card:hover {
+            transform: translateY(-3px);
+        }
+        /* Customer Selection Panel */
+        .customer-select-card {
+            background: #f8fafc;
+            border-radius: 1.2rem;
+            border: 1px solid #e2e8f0;
+        }
+        .customer-item {
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 1rem;
+            border: 1px solid transparent;
+        }
+        .customer-item:hover {
+            background: #eef2ff;
+            border-color: #3b82f6;
+            transform: translateX(5px);
+        }
+        .customer-item.active-customer {
+            background: #dbeafe;
+            border-color: #2563eb;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.15);
+        }
+        .form-control, .form-select {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            transition: all 0.2s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+            outline: none;
+        }
+        .btn-update {
+            background: linear-gradient(105deg, #2563eb, #3b82f6);
+            border: none;
+            border-radius: 2rem;
+            padding: 0.8rem 1.8rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            box-shadow: 0 8px 14px -6px rgba(37,99,235,0.3);
+        }
+        .btn-update:hover {
+            transform: scale(1.02);
+            background: linear-gradient(105deg, #3b82f6, #60a5fa);
+        }
+        .btn-reset-update {
+            border-radius: 2rem;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            border: 2px solid #cbd5e1;
+            background: white;
+        }
+        .btn-reset-update:hover {
+            background: #f1f5f9;
+        }
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+        }
+        .photo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #3b82f6;
+            background: #f1f5f9;
+        }
+        @media (max-width: 768px) {
+            .update-card {
+                margin: 1rem;
+                padding: 1.2rem !important;
+            }
+        }
+        .toast-custom {
+            border-radius: 1rem;
+        }
+        .section-title {
+            border-left: 4px solid #3b82f6;
+            padding-left: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-glass sticky-top py-3">
+        <div class="container px-4">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-building-columns me-2 text-blue-400"></i> 
+                BankMS<span class="text-blue-400"> Elite</span>
+            </a>
+            <button class="navbar-toggler bg-white/10 border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white fw-semibold bg-primary/20 rounded-pill px-3" href="#"><i class="fas fa-user-edit me-1"></i> Update Customer</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-users me-1"></i> All Customers</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Update Customer Section -->
+    <div class="container py-5 my-3">
+        <div class="row g-4">
+            <!-- Left Panel: Customer Selection List -->
+            <div class="col-lg-4">
+                <div class="update-card p-4 h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="fas fa-users fs-4 text-primary"></i>
+                        <h4 class="fw-bold mb-0">Select Customer</h4>
+                    </div>
+                    <p class="text-muted small mb-3">Click on any customer below to load their data for updating.</p>
+                    <div class="mb-3">
+                        <input type="text" id="customerSearchList" class="form-control form-control-sm" placeholder="🔍 Search by name, ID, account, or mobile...">
+                    </div>
+                    <div id="customerListContainer" style="max-height: 550px; overflow-y: auto;">
+                        <div class="text-center py-4 text-muted">Loading customers...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Update Form -->
+            <div class="col-lg-8">
+                <div class="update-card p-4 p-md-5">
+                    <div class="text-center mb-3">
+                        <div class="bg-blue-100 d-inline-block p-3 rounded-3xl mb-2">
+                            <i class="fas fa-user-pen fa-3x text-blue-600"></i>
+                        </div>
+                        <h2 class="fw-bold text-dark">Update Customer Data</h2>
+                        <p class="text-muted">Modify customer personal, contact, and banking information.</p>
+                        <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+                    </div>
+
+                    <div id="noCustomerSelected" class="alert alert-info text-center">
+                        <i class="fas fa-info-circle me-2"></i> Please select a customer from the left panel to update their details.
+                    </div>
+
+                    <form id="updateCustomerForm" style="display: none;">
+                        <input type="hidden" id="updateCustomerId">
+                        <input type="hidden" id="originalCustomerId">
+
+                        <!-- Personal Information -->
+                        <div class="mb-4 pb-2 border-bottom">
+                            <h5 class="fw-semibold section-title"><i class="fas fa-user-circle me-2 text-primary"></i> Personal Information</h5>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="fullName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Date of Birth <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="dob" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Gender</label>
+                                <select class="form-select" id="gender">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nationality</label>
+                                <input type="text" class="form-control" id="nationality">
+                            </div>
+                        </div>
+
+                        <!-- Contact & Address -->
+                        <div class="mt-4 mb-3 pb-2 border-bottom">
+                            <h5 class="fw-semibold section-title"><i class="fas fa-address-card me-2 text-primary"></i> Contact & Address</h5>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Mobile Number <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="mobile" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Alternate Phone</label>
+                                <input type="tel" class="form-control" id="altPhone">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Address Line <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="address" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">City <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="city" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">State</label>
+                                <input type="text" class="form-control" id="state">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Postal Code</label>
+                                <input type="text" class="form-control" id="zipcode">
+                            </div>
+                        </div>
+
+                        <!-- Banking Details -->
+                        <div class="mt-4 mb-3 pb-2 border-bottom">
+                            <h5 class="fw-semibold section-title"><i class="fas fa-university me-2 text-primary"></i> Banking & Account Details</h5>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Account Type</label>
+                                <select class="form-select" id="accountType">
+                                    <option value="Savings">Savings Account</option>
+                                    <option value="Current">Current Account</option>
+                                    <option value="Fixed Deposit">Fixed Deposit</option>
+                                    <option value="NRI Account">NRI Account</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Preferred Branch</label>
+                                <select class="form-select" id="branchSelect">
+                                    <option value="1">Downtown Corporate Hub</option>
+                                    <option value="2">Uptown Financial Center</option>
+                                    <option value="3">Silicon Valley Tech Branch</option>
+                                    <option value="4">London Canary Wharf</option>
+                                    <option value="5">Mumbai Financial Hub</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Account Status</label>
+                                <select class="form-select" id="accountStatus">
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="Suspended">Suspended</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nominee Name</label>
+                                <input type="text" class="form-control" id="nominee">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Occupation / Additional Notes</label>
+                                <textarea class="form-control" id="occupationNotes" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex flex-wrap gap-3 justify-content-end mt-4">
+                            <button type="button" id="resetUpdateBtn" class="btn btn-reset-update"><i class="fas fa-undo-alt me-2"></i> Reset Changes</button>
+                            <button type="submit" class="btn btn-update text-white"><i class="fas fa-save me-2"></i> Update Customer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5 py-4 text-center">
+        <div class="container">
+            <p class="mb-0 small">&copy; 2025 Bank Management System — Customer Update Module. Modify customer data securely.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        <div id="updateToast" class="toast align-items-center text-white bg-dark border-0 toast-custom" role="alert">
+            <div class="d-flex">
+                <div class="toast-body" id="updateToastMsg">Message</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script>
+        // ---------- MOCK CUSTOMER DATABASE (Bank Management System) ----------
+        let customersDatabase = [
+            { id: 1001, customerId: "CUST1001", fullName: "Johnathan Michael Doe", dob: "1985-05-12", gender: "Male", nationality: "American", email: "john.doe@email.com", mobile: "+1 212-555-1234", altPhone: "+1 212-555-0001", address: "123 Wall Street", city: "New York", state: "NY", zipcode: "10005", accountType: "Savings", branchId: 1, status: "Active", nominee: "Jane Doe", occupationNotes: "Software Engineer", balance: 12500.50, accountNumber: "BMS-4829173645", registrationDate: "2023-05-12" },
+            { id: 1002, customerId: "CUST1002", fullName: "Sarah Johnson", dob: "1990-08-23", gender: "Female", nationality: "American", email: "sarah.j@email.com", mobile: "+1 310-555-9876", altPhone: "", address: "456 Sunset Blvd", city: "Los Angeles", state: "CA", zipcode: "90028", accountType: "Current", branchId: 2, status: "Active", nominee: "Michael Johnson", occupationNotes: "Business Owner", balance: 8750.25, accountNumber: "BMS-5938264712", registrationDate: "2023-08-23" },
+            { id: 1003, customerId: "CUST1003", fullName: "Priya Sharma", dob: "1988-01-15", gender: "Female", nationality: "Indian", email: "priya.sharma@email.com", mobile: "+91 98765 43210", altPhone: "+91 22 61234567", address: "BKC, Bandra East", city: "Mumbai", state: "Maharashtra", zipcode: "400051", accountType: "Savings", branchId: 5, status: "Active", nominee: "Rahul Sharma", occupationNotes: "Doctor", balance: 34500.00, accountNumber: "BMS-7049381526", registrationDate: "2024-01-15" },
+            { id: 1004, customerId: "CUST1004", fullName: "Michael Chen", dob: "1992-11-03", gender: "Male", nationality: "American", email: "michael.chen@email.com", mobile: "+1 408-555-7890", altPhone: "", address: "1000 Innovation Way", city: "San Jose", state: "CA", zipcode: "95113", accountType: "Fixed Deposit", branchId: 3, status: "Active", nominee: "Linda Chen", occupationNotes: "Tech Lead", balance: 25600.75, accountNumber: "BMS-8150492637", registrationDate: "2022-11-03" },
+            { id: 1005, customerId: "CUST1005", fullName: "Oliver Smith", dob: "1975-09-20", gender: "Male", nationality: "British", email: "oliver.smith@email.com", mobile: "+44 20 7946 0456", altPhone: "", address: "25 Bank Street", city: "London", state: "England", zipcode: "E14 5JP", accountType: "Current", branchId: 4, status: "Active", nominee: "Emma Smith", occupationNotes: "Financial Advisor", balance: 52300.00, accountNumber: "BMS-9261503748", registrationDate: "2023-09-20" }
+        ];
+
+        let currentSelectedCustomerId = null;
+
+        // Helper: Show toast notification
+        function showToast(message, type = 'success') {
+            const toastEl = document.getElementById('updateToast');
+            const toastMsg = document.getElementById('updateToastMsg');
+            toastMsg.innerText = message;
+            if (type === 'success') {
+                toastEl.classList.remove('bg-danger');
+                toastEl.classList.add('bg-success');
+            } else {
+                toastEl.classList.remove('bg-success');
+                toastEl.classList.add('bg-danger');
+            }
+            const bsToast = new bootstrap.Toast(toastEl, { delay: 3500, autohide: true });
+            bsToast.show();
+        }
+
+        // Render customer list in left panel
+        function renderCustomerList(filterText = "") {
+            const container = document.getElementById('customerListContainer');
+            const filterLower = filterText.toLowerCase();
+            let filtered = customersDatabase.filter(c => 
+                c.fullName.toLowerCase().includes(filterLower) ||
+                c.customerId.toLowerCase().includes(filterLower) ||
+                c.accountNumber.toLowerCase().includes(filterLower) ||
+                c.mobile.toLowerCase().includes(filterLower) ||
+                c.email.toLowerCase().includes(filterLower)
+            );
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-4 text-muted"><i class="fas fa-search"></i> No matching customers</div>`;
+                return;
+            }
+            let html = `<div class="list-group list-group-flush bg-transparent">`;
+            filtered.forEach(customer => {
+                const activeClass = (currentSelectedCustomerId === customer.id) ? 'active-customer' : '';
+                html += `
+                    <div class="customer-item p-3 mb-2 ${activeClass}" data-customer-id="${customer.id}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-user-circle text-primary me-2"></i>
+                                <strong class="text-dark">${escapeHtml(customer.fullName)}</strong>
+                                <div class="small text-muted">${escapeHtml(customer.customerId)} | ${escapeHtml(customer.accountNumber)}</div>
+                                <div class="small text-muted"><i class="fas fa-phone-alt"></i> ${escapeHtml(customer.mobile)}</div>
+                            </div>
+                            <i class="fas fa-chevron-right text-primary opacity-50"></i>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+            
+            // attach click events
+            document.querySelectorAll('.customer-item').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    const id = parseInt(el.getAttribute('data-customer-id'));
+                    loadCustomerForUpdate(id);
+                });
+            });
+        }
+
+        function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+        // Load customer data into update form
+        function loadCustomerForUpdate(customerId) {
+            const customer = customersDatabase.find(c => c.id === customerId);
+            if (!customer) return;
+            currentSelectedCustomerId = customerId;
+            
+            document.getElementById('noCustomerSelected').style.display = 'none';
+            document.getElementById('updateCustomerForm').style.display = 'block';
+            
+            document.getElementById('updateCustomerId').value = customer.id;
+            document.getElementById('originalCustomerId').value = customer.customerId;
+            document.getElementById('fullName').value = customer.fullName;
+            document.getElementById('dob').value = customer.dob;
+            document.getElementById('gender').value = customer.gender;
+            document.getElementById('nationality').value = customer.nationality || '';
+            document.getElementById('email').value = customer.email;
+            document.getElementById('mobile').value = customer.mobile;
+            document.getElementById('altPhone').value = customer.altPhone || '';
+            document.getElementById('address').value = customer.address;
+            document.getElementById('city').value = customer.city;
+            document.getElementById('state').value = customer.state || '';
+            document.getElementById('zipcode').value = customer.zipcode || '';
+            document.getElementById('accountType').value = customer.accountType;
+            document.getElementById('branchSelect').value = customer.branchId;
+            document.getElementById('accountStatus').value = customer.status;
+            document.getElementById('nominee').value = customer.nominee || '';
+            document.getElementById('occupationNotes').value = customer.occupationNotes || '';
+            
+            // re-render list to highlight active
+            renderCustomerList(document.getElementById('customerSearchList').value);
+            showToast(`Loaded customer: ${customer.fullName} (${customer.customerId})`, 'success');
+        }
+
+        // Update customer in database
+        function updateCustomerInDB() {
+            const id = parseInt(document.getElementById('updateCustomerId').value);
+            if (!id) { showToast("No customer selected for update.", "error"); return; }
+            const customerIndex = customersDatabase.findIndex(c => c.id === id);
+            if (customerIndex === -1) { showToast("Customer not found.", "error"); return; }
+            
+            // Validate required fields
+            const fullName = document.getElementById('fullName').value.trim();
+            const dob = document.getElementById('dob').value;
+            const email = document.getElementById('email').value.trim();
+            const mobile = document.getElementById('mobile').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const city = document.getElementById('city').value.trim();
+            
+            if (!fullName) { showToast("Full name is required.", "error"); return; }
+            if (!dob) { showToast("Date of birth is required.", "error"); return; }
+            if (!email || !email.includes('@')) { showToast("Valid email is required.", "error"); return; }
+            if (!mobile) { showToast("Mobile number is required.", "error"); return; }
+            if (!address) { showToast("Address is required.", "error"); return; }
+            if (!city) { showToast("City is required.", "error"); return; }
+            
+            const updatedCustomer = {
+                ...customersDatabase[customerIndex],
+                fullName: fullName,
+                dob: dob,
+                gender: document.getElementById('gender').value,
+                nationality: document.getElementById('nationality').value,
+                email: email,
+                mobile: mobile,
+                altPhone: document.getElementById('altPhone').value,
+                address: address,
+                city: city,
+                state: document.getElementById('state').value,
+                zipcode: document.getElementById('zipcode').value,
+                accountType: document.getElementById('accountType').value,
+                branchId: parseInt(document.getElementById('branchSelect').value),
+                status: document.getElementById('accountStatus').value,
+                nominee: document.getElementById('nominee').value,
+                occupationNotes: document.getElementById('occupationNotes').value
+            };
+            
+            customersDatabase[customerIndex] = updatedCustomer;
+            renderCustomerList(document.getElementById('customerSearchList').value);
+            showToast(`✅ Customer "${updatedCustomer.fullName}" data updated successfully!`, "success");
+            loadCustomerForUpdate(id); // reload with updated data
+        }
+
+        // Event Listeners
+        document.getElementById('updateCustomerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            updateCustomerInDB();
+        });
+        
+        document.getElementById('resetUpdateBtn').addEventListener('click', () => {
+            if (currentSelectedCustomerId) {
+                loadCustomerForUpdate(currentSelectedCustomerId);
+                showToast("Form reset to last saved state.", "info");
+            } else {
+                showToast("No customer selected.", "error");
+            }
+        });
+        
+        document.getElementById('customerSearchList').addEventListener('input', (e) => {
+            renderCustomerList(e.target.value);
+        });
+        
+        // initial render
+        renderCustomerList("");
+        document.getElementById('updateCustomerForm').style.display = 'none';
+        
+        // Initialize select2 for branch dropdown
+        $(document).ready(function() {
+            $('#branchSelect').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: 'Select branch'
+            });
+        });
+    </script>
+    <style>
+        .rounded-3xl { border-radius: 1.5rem; }
+        .bg-blue-100 { background-color: #dbeafe; }
+        .customer-item { transition: all 0.2s; cursor: pointer; background: white; border-radius: 1rem; margin-bottom: 0.5rem; }
+        .customer-item.active-customer { background: linear-gradient(95deg, #eef2ff, #dbeafe); border-left: 4px solid #2563eb; }
+        .customer-item:hover { background: #f1f5f9; transform: translateX(5px); }
+        .section-title { border-left: 4px solid #3b82f6; }
+        .select2-container--bootstrap-5 .select2-selection {
+            border-radius: 1rem;
+            border: 1.5px solid #e2e8f0;
+            min-height: 48px;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Bank Management System | Delete Branch</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- DataTables CSS for better branch listing (optional but elegant) -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        /* Navbar Glass Effect */
+        .navbar-glass {
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .navbar-brand {
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFFFFF, #60A5FA);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 1.6rem;
+        }
+        .nav-link {
+            color: #e2e8f0 !important;
+            transition: 0.2s;
+        }
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(59,130,246,0.2);
+            border-radius: 0.5rem;
+        }
+        /* Main Card */
+        .delete-card {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            border: none;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        .delete-card:hover {
+            transform: translateY(-3px);
+        }
+        /* Search & Branch List */
+        .branch-table-wrapper {
+            border-radius: 1.2rem;
+            overflow: hidden;
+        }
+        .table-branch th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .btn-delete-branch {
+            background: #ef4444;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-delete-branch:hover {
+            background: #dc2626;
+            transform: scale(1.03);
+            box-shadow: 0 5px 12px rgba(220,38,38,0.3);
+        }
+        .btn-view-details {
+            background: #3b82f6;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+        }
+        .search-input {
+            border-radius: 2rem;
+            padding: 0.7rem 1.2rem;
+            border: 1.5px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .search-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+            outline: none;
+        }
+        .alert-warning-custom {
+            background: #fef3c7;
+            border-left: 6px solid #f59e0b;
+            border-radius: 1rem;
+        }
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+        }
+        .modal-content-custom {
+            border-radius: 1.5rem;
+        }
+        .branch-highlight {
+            background: #fef2f2;
+            transition: 0.2s;
+        }
+        @media (max-width: 768px) {
+            .delete-card {
+                margin: 1rem;
+                padding: 1rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar (Consistent with Bank Management) -->
+    <nav class="navbar navbar-expand-lg navbar-glass sticky-top py-3">
+        <div class="container px-4">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-building-columns me-2 text-blue-400"></i> 
+                BankMS<span class="text-blue-400"> Elite</span>
+            </a>
+            <button class="navbar-toggler bg-white/10 border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white fw-semibold bg-primary/20 rounded-pill px-3" href="#"><i class="fas fa-trash-alt me-1"></i> Delete Branch</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-code-branch me-1"></i> All Branches</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Delete Branch Section -->
+    <div class="container py-5 my-3">
+        <div class="row justify-content-center">
+            <div class="col-lg-11 col-xl-10">
+                <!-- Breadcrumb navigation -->
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb bg-transparent p-0">
+                        <li class="breadcrumb-item"><a href="#" class="text-primary text-decoration-none">Branch Management</a></li>
+                        <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">Delete Branch</li>
+                    </ol>
+                </nav>
+
+                <!-- Main Delete Card -->
+                <div class="delete-card p-4 p-md-5 shadow-lg">
+                    <div class="text-center mb-4">
+                        <div class="bg-red-100 d-inline-block p-3 rounded-3xl mb-2">
+                            <i class="fas fa-trash-alt fa-3x text-red-500"></i>
+                        </div>
+                        <h2 class="fw-bold text-dark mt-2">Delete Branch Permanently</h2>
+                        <p class="text-muted">Search, select, and remove a branch from the Bank Management System. <span class="text-danger fw-semibold">⚠️ Action is irreversible.</span></p>
+                        <div class="w-24 h-1 bg-danger mx-auto rounded-full"></div>
+                    </div>
+
+                    <!-- Search Filter & Branch Table -->
+                    <div class="mb-4">
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-white border-end-0 rounded-start-pill"><i class="fas fa-search text-primary"></i></span>
+                            <input type="text" id="branchSearchInput" class="form-control search-input border-start-0 rounded-end-pill" placeholder="Search by Branch Name, Code, City, or Mobile...">
+                        </div>
+                        <div class="form-text mt-2"><i class="fas fa-info-circle"></i> Type to filter branches below. Click "Delete Branch" next to any branch.</div>
+                    </div>
+
+                    <!-- Branches Table (Dynamic Data) -->
+                    <div class="branch-table-wrapper border rounded-4 bg-white">
+                        <div class="table-responsive">
+                            <table id="branchesTable" class="table table-branch table-hover align-middle mb-0">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th>Branch ID</th>
+                                        <th>Branch Name</th>
+                                        <th>Code</th>
+                                        <th>City</th>
+                                        <th>Mobile</th>
+                                        <th>Staff Count</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="branchesTableBody">
+                                    <!-- Branches will be injected dynamically via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- No results message -->
+                    <div id="noResultsMsg" class="text-center py-5 text-muted d-none">
+                        <i class="fas fa-building fa-3x mb-3 opacity-25"></i>
+                        <p>No branches match your search criteria.</p>
+                    </div>
+
+                    <!-- Extra Safety Alert -->
+                    <div class="alert alert-warning-custom mt-4 p-3 d-flex align-items-center gap-3">
+                        <i class="fas fa-exclamation-triangle fa-2x text-amber-500"></i>
+                        <div>
+                            <strong class="d-block">Data Deletion Advisory:</strong>
+                            Deleting a branch will also remove associated staff records, transactions history references, and customer assignments (simulated environment). Please ensure you have proper authorization.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal (Bootstrap Modal) -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-custom border-0 shadow-2xl">
+                <div class="modal-header bg-danger text-white rounded-top-3">
+                    <h5 class="modal-title fw-bold" id="deleteModalLabel"><i class="fas fa-skull-crosswalk me-2"></i> Confirm Branch Deletion</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-building-circle-exclamation fa-4x text-danger opacity-50 mb-2"></i>
+                    </div>
+                    <p class="fs-6">Are you sure you want to permanently delete the branch <strong id="deleteBranchName" class="text-danger">[Branch Name]</strong> ?</p>
+                    <p class="small text-muted">This action cannot be undone. All related staff, customer mappings, and transaction logs (simulated) will be removed.</p>
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" id="confirmCheckbox">
+                        <label class="form-check-label text-dark fw-medium" for="confirmCheckbox">
+                            I understand the consequences and want to permanently delete this branch.
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="finalDeleteBtn" class="btn btn-danger rounded-pill px-4" disabled><i class="fas fa-trash-can me-1"></i> Delete Permanently</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success / Error Toast (optional) -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="deleteToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="4000">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">
+                    Success message
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5 py-4 text-center">
+        <div class="container">
+            <p class="mb-0 small">&copy; 2025 Bank Management System — Branch Deletion Module. All deletions are logged.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts: jQuery, Bootstrap, DataTables -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    
+    <script>
+        // ----------------------------- MOCK BRANCH DATA (Bank Management System Demo) -----------------------------
+        let branchesData = [
+            { id: 1, name: "Downtown Corporate Hub", code: "BRN-DT101", address: "123 Wall Street", city: "New York", mobile: "+1 212-555-1234", email: "downtown@bankms.com", staffCount: 24, status: "Active", establishment: "2010-05-12" },
+            { id: 2, name: "Uptown Financial Center", code: "BRN-UP202", address: "890 5th Avenue", city: "New York", mobile: "+1 212-555-5678", email: "uptown@bankms.com", staffCount: 18, status: "Active", establishment: "2015-08-22" },
+            { id: 3, name: "Silicon Valley Tech Branch", code: "BRN-SV303", address: "1000 Innovation Way", city: "San Jose", mobile: "+1 408-555-9090", email: "sv@bankms.com", staffCount: 32, status: "Active", establishment: "2018-11-01" },
+            { id: 4, name: "London Canary Wharf", code: "BRN-LON404", address: "25 Bank Street", city: "London", mobile: "+44 20 7946 0123", email: "london@bankms.com", staffCount: 29, status: "Active", establishment: "2012-09-17" },
+            { id: 5, name: "Mumbai Financial Hub", code: "BRN-MUM505", address: "BKC, Bandra East", city: "Mumbai", mobile: "+91 22 6123 4567", email: "mumbai@bankms.com", staffCount: 41, status: "Active", establishment: "2017-03-30" },
+            { id: 6, name: "Downtown Chicago Branch", code: "BRN-CHI606", address: "200 S Wacker Dr", city: "Chicago", mobile: "+1 312-555-7890", email: "chicago@bankms.com", staffCount: 15, status: "Inactive", establishment: "2009-12-10" },
+            { id: 7, name: "Toronto Commerce Court", code: "BRN-TOR707", address: "25 King St W", city: "Toronto", mobile: "+1 416-555-2345", email: "toronto@bankms.com", staffCount: 22, status: "Active", establishment: "2020-07-19" },
+            { id: 8, name: "Berlin Central Branch", code: "BRN-BER808", address: "Unter den Linden 10", city: "Berlin", mobile: "+49 30 12345678", email: "berlin@bankms.com", staffCount: 19, status: "Under Maintenance", establishment: "2016-02-25" }
+        ];
+
+        // Reference to table body
+        let tableBody = document.getElementById("branchesTableBody");
+        let noResultsDiv = document.getElementById("noResultsMsg");
+        let searchInput = document.getElementById("branchSearchInput");
+        let currentDeleteId = null;
+        let currentDeleteName = "";
+
+        // Helper: Render branches table based on search filter
+        function renderBranches(filterText = "") {
+            const filterLower = filterText.toLowerCase().trim();
+            let filteredBranches = branchesData.filter(branch => {
+                return (
+                    branch.name.toLowerCase().includes(filterLower) ||
+                    branch.code.toLowerCase().includes(filterLower) ||
+                    branch.city.toLowerCase().includes(filterLower) ||
+                    branch.mobile.toLowerCase().includes(filterLower) ||
+                    branch.id.toString().includes(filterLower)
+                );
+            });
+
+            if (filteredBranches.length === 0) {
+                tableBody.innerHTML = "";
+                noResultsDiv.classList.remove("d-none");
+                return;
+            }
+            noResultsDiv.classList.add("d-none");
+            
+            let html = "";
+            filteredBranches.forEach(branch => {
+                let statusBadge = "";
+                if (branch.status === "Active") statusBadge = '<span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1"><i class="fas fa-check-circle me-1"></i>Active</span>';
+                else if (branch.status === "Inactive") statusBadge = '<span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3 py-1"><i class="fas fa-pause me-1"></i>Inactive</span>';
+                else statusBadge = '<span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-1"><i class="fas fa-tools me-1"></i>Under Maintenance</span>';
+                
+                html += `
+                    <tr id="branch-row-${branch.id}">
+                        <td class="fw-semibold">#${branch.id}</td>
+                        <td><i class="fas fa-building me-2 text-primary"></i> ${escapeHtml(branch.name)}</td>
+                        <td><span class="badge bg-light text-dark border px-2 py-1 rounded-pill">${escapeHtml(branch.code)}</span></td>
+                        <td><i class="fas fa-map-pin me-1 text-muted"></i> ${escapeHtml(branch.city)}</td>
+                        <td>${escapeHtml(branch.mobile)}</td>
+                        <td><span class="badge bg-info bg-opacity-15 text-info px-3 py-1 rounded-pill"><i class="fas fa-users me-1"></i> ${branch.staffCount}</span></td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <button class="btn btn-delete-branch text-white btn-sm me-1" data-id="${branch.id}" data-name="${escapeHtml(branch.name)}"><i class="fas fa-trash-alt me-1"></i> Delete</button>
+                            <button class="btn btn-view-details text-white btn-sm" data-id="${branch.id}" data-bs-toggle="modal" data-bs-target="#branchDetailModal"><i class="fas fa-info-circle"></i> Details</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tableBody.innerHTML = html;
+            
+            // Attach delete event listeners to each delete button
+            document.querySelectorAll('.btn-delete-branch').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const branchId = parseInt(btn.getAttribute('data-id'));
+                    const branchName = btn.getAttribute('data-name');
+                    openDeleteModal(branchId, branchName);
+                });
+            });
+            
+            // Attach view detail events (dynamic detail modal)
+            document.querySelectorAll('.btn-view-details').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    showBranchDetails(id);
+                });
+            });
+        }
+
+        // Escape HTML to prevent injection
+        function escapeHtml(str) {
+            if (!str) return "";
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // Open delete confirmation modal with branch info
+        function openDeleteModal(branchId, branchName) {
+            currentDeleteId = branchId;
+            currentDeleteName = branchName;
+            document.getElementById("deleteBranchName").innerHTML = branchName + " (ID: " + branchId + ")";
+            const confirmCheckbox = document.getElementById("confirmCheckbox");
+            const finalDeleteBtn = document.getElementById("finalDeleteBtn");
+            
+            // Reset checkbox and button state
+            confirmCheckbox.checked = false;
+            finalDeleteBtn.disabled = true;
+            
+            // Show modal
+            const deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            deleteModal.show();
+            
+            // Enable delete button only when checkbox is checked
+            confirmCheckbox.onchange = function() {
+                finalDeleteBtn.disabled = !this.checked;
+            };
+            
+            // Setup final delete action (remove once, avoid multiple listeners)
+            const finalBtn = document.getElementById("finalDeleteBtn");
+            const newFinalBtn = finalBtn.cloneNode(true);
+            finalBtn.parentNode.replaceChild(newFinalBtn, finalBtn);
+            newFinalBtn.addEventListener('click', function() {
+                if (currentDeleteId !== null) {
+                    // Perform deletion from branchesData
+                    const index = branchesData.findIndex(b => b.id === currentDeleteId);
+                    if (index !== -1) {
+                        branchesData.splice(index, 1);
+                        // Re-render table
+                        renderBranches(searchInput.value);
+                        showToastMessage(`✅ Branch "${currentDeleteName}" has been permanently deleted from the system.`, "success");
+                    } else {
+                        showToastMessage("⚠️ Branch not found or already deleted.", "error");
+                    }
+                    // close modal
+                    const modalElem = document.getElementById('confirmDeleteModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalElem);
+                    modalInstance.hide();
+                    currentDeleteId = null;
+                }
+            });
+        }
+
+        // Show branch details modal (dynamic)
+        function showBranchDetails(branchId) {
+            const branch = branchesData.find(b => b.id === branchId);
+            if (!branch) return;
+            // if modal not exists, create dynamic modal content quickly or use pre-existing
+            let detailModal = document.getElementById('branchDetailModal');
+            if (!detailModal) {
+                // Create modal dynamically
+                const modalDiv = document.createElement('div');
+                modalDiv.className = 'modal fade';
+                modalDiv.id = 'branchDetailModal';
+                modalDiv.tabIndex = -1;
+                modalDiv.setAttribute('aria-hidden', 'true');
+                modalDiv.innerHTML = `
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content rounded-4 border-0 shadow-xl">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title"><i class="fas fa-info-circle me-2"></i>Branch Details</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body" id="dynamicDetailBody"></div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modalDiv);
+                detailModal = document.getElementById('branchDetailModal');
+            }
+            const bodyContainer = document.getElementById('dynamicDetailBody');
+            if (bodyContainer) {
+                bodyContainer.innerHTML = `
+                    <div class="mb-2"><strong><i class="fas fa-tag"></i> Branch Name:</strong> ${escapeHtml(branch.name)}</div>
+                    <div class="mb-2"><strong><i class="fas fa-code"></i> Branch Code:</strong> ${escapeHtml(branch.code)}</div>
+                    <div class="mb-2"><strong><i class="fas fa-location-dot"></i> Address:</strong> ${escapeHtml(branch.address)}, ${escapeHtml(branch.city)}</div>
+                    <div class="mb-2"><strong><i class="fas fa-phone-alt"></i> Mobile:</strong> ${escapeHtml(branch.mobile)}</div>
+                    <div class="mb-2"><strong><i class="fas fa-envelope"></i> Email:</strong> ${escapeHtml(branch.email)}</div>
+                    <div class="mb-2"><strong><i class="fas fa-calendar-alt"></i> Established:</strong> ${branch.establishment || 'N/A'}</div>
+                    <div class="mb-2"><strong><i class="fas fa-users"></i> Staff Count:</strong> ${branch.staffCount}</div>
+                    <div class="mb-2"><strong><i class="fas fa-chart-line"></i> Status:</strong> ${branch.status}</div>
+                `;
+            }
+            const modalDetail = new bootstrap.Modal(detailModal);
+            modalDetail.show();
+        }
+
+        // Toast notification (feedback)
+        function showToastMessage(message, type = "success") {
+            const toastEl = document.getElementById('deleteToast');
+            const toastBody = document.getElementById('toastMessage');
+            toastBody.innerText = message;
+            if (type === "success") {
+                toastEl.classList.remove("bg-danger");
+                toastEl.classList.add("bg-success");
+            } else {
+                toastEl.classList.remove("bg-success");
+                toastEl.classList.add("bg-danger");
+            }
+            const bsToast = new bootstrap.Toast(toastEl, { autohide: true, delay: 3500 });
+            bsToast.show();
+        }
+
+        // Search input event listener
+        searchInput.addEventListener('input', function(e) {
+            renderBranches(e.target.value);
+        });
+
+        // Initial render
+        renderBranches();
+
+        // Additional: Dummy reset or confirmation that this is a full "Delete Branch" page
+        console.log("Bank Management System - Delete Branch Module Loaded");
+    </script>
+
+    <style>
+        .rounded-3xl {
+            border-radius: 1.5rem;
+        }
+        .bg-red-100 {
+            background-color: #fee2e2;
+        }
+        .text-red-500 {
+            color: #ef4444;
+        }
+        .btn-delete-branch {
+            background: linear-gradient(105deg, #dc2626, #ef4444);
+            box-shadow: 0 2px 5px rgba(220,38,38,0.2);
+        }
+        .btn-view-details {
+            background: linear-gradient(105deg, #2563eb, #3b82f6);
+        }
+        .table-branch tbody tr:hover {
+            background-color: #fef2f2;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .bg-opacity-15 {
+            background-color: rgba(59,130,246,0.15);
+        }
+        .bg-opacity-10 {
+            background-color: rgba(34,197,94,0.12);
+        }
+        .toast {
+            border-radius: 2rem;
+        }
+    </style>
+</body>
+</html>
